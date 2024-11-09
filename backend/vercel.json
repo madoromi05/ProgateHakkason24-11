@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "src/*.js",
-      "use": "@vercel/node"
+      "src": "backend/app.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/src/index.js"
+      "src": "/api/(.*)",
+      "dest": "/backend/app.py"
     }
   ]
 }
