@@ -4,7 +4,13 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/hello')
+      .then(response => setMessage(response.data.message))
+      .catch(error => console.error('Error:', error));
+  }, []);
 
   return (
     <>
