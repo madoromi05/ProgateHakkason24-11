@@ -2,8 +2,8 @@ from flask import Flask, render_template,jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from pydub import AudioSegment
-from zigoe.test import zigoe
-from spotfyapi.test import spotfyapi
+#from zigoe.test import zigoe
+#from spotfyapi.test import spotfyapi
 import io
 import numpy as np
 def spotfyapi(data):
