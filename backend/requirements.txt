@@ -1,0 +1,8 @@
+#フロントとの通信
+Flask
+Flask-Cors
+Flask-SocketIO
+#地声処理
+pydub
+numpy
+#spotfyapiとの通信

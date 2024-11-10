@@ -20,13 +20,27 @@
 .modoru{
     position: absolute;
     bottom: 10%; /* 画面下から20pxの位置に配置 */
-    left: 10%; /* 画面の中央 */
+    left: 15%; /* 画面の左側 */
     transform: translateX(-50%); /* 中央揃え */
     font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
     padding: 10px 20px; /* ボタンの内側の余白 */
 }
 
+.susumu{
+    position: absolute;
+    bottom: 10%; /* 画面下から20pxの位置に配置 */
+    left: 85%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+    font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+}
+
+
 img.rokuonnB{
+    position: absolute;
+    bottom: 30%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
     width: 96px;
     height: 120px;
 }
@@ -36,11 +50,18 @@ img.rokuonnB{
     color: red;
     font-size: 16px;
     margin-top: 8px;
-    text-align: center;
+    position: absolute;
+    bottom: 25%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
 }
 
 /* rokuonn画像をホバーした */
 img.rokuonnB:hover{
+    position: absolute;
+    bottom: 30%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
     width: 96px;
     height: 120px;
 	/* リンクをホバーしたときのカーソルにする。*/
@@ -49,9 +70,10 @@ img.rokuonnB:hover{
  
 /* rokuonn画像をクリックした瞬間 */
 img.rokuonnB:active{
+    position: absolute;
+    bottom: 29%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
     width: 96px;
     height: 120px;
-	/* 今いる位置から相対的に3px下に配置する。*/
-	position: relative;
-	top: 3px;
 }
