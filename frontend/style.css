@@ -1,0 +1,57 @@
+
+.midashi{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25vh; /* 画面全体の高さ */
+    font-size: 7em; /* 見出しの文字サイズ */
+    text-align: center;
+}
+
+.button{
+    position: absolute;
+    bottom: 10%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の中央 */
+    transform: translateX(-50%); /* 中央揃え */
+    font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+}
+
+.modoru{
+    position: absolute;
+    bottom: 10%; /* 画面下から20pxの位置に配置 */
+    left: 10%; /* 画面の中央 */
+    transform: translateX(-50%); /* 中央揃え */
+    font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+}
+
+img.rokuonnB{
+    width: 96px;
+    height: 120px;
+}
+
+.recording-text {
+    display: none; /* デフォルトで非表示 */
+    color: red;
+    font-size: 16px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* rokuonn画像をホバーした */
+img.rokuonnB:hover{
+    width: 96px;
+    height: 120px;
+	/* リンクをホバーしたときのカーソルにする。*/
+	cursor: pointer;
+}
+ 
+/* rokuonn画像をクリックした瞬間 */
+img.rokuonnB:active{
+    width: 96px;
+    height: 120px;
+	/* 今いる位置から相対的に3px下に配置する。*/
+	position: relative;
+	top: 3px;
+}
