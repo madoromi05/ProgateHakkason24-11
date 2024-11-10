@@ -46,7 +46,6 @@ def recommend_japanese_songs(limit=50):
                     'artist': track['artists'][0]['name'],
                     'key': features['key'],
                     'mode': features['mode'],
-                    'danceability': features['danceability'],
                 })
 
         offset += 50
@@ -56,16 +55,5 @@ def recommend_japanese_songs(limit=50):
     return recommended_tracks
 
 # 推薦曲の取得と表示
-recommended_songs = recommend_japanese_songs()
-
-print(f"\n推薦曲リスト（あなたの声域: {user_lowest_pitch}Hz - {user_highest_pitch}Hz）:")
-for i, song in enumerate(recommended_songs, 1):
-    print(f"{i}. {song['name']} by {song['artist']}")
-    print(f"   キー: {song['key']}, モード: {'マイナー' if song['mode'] == 0 else 'メジャー'}")
-    print(f"   ダンス性: {song['danceability']:.2f}")
-    print()
-
-# 結果をCSVファイルに保存
-df = pd.DataFrame(recommended_songs)
-df.to_csv('recommended_japanese_songs.csv', index=False, encoding='utf-8-sig')
-print("推薦曲リストをrecommended_japanese_songs.csvに保存しました。")
+def get_recommended_songs():
+    return recommend_japanese_songs()
