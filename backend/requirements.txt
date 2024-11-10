@@ -1,8 +1,10 @@
-#フロントとの通信
+#front
 Flask
 Flask-Cors
 Flask-SocketIO
-#地声処理
+#zigoe
 pydub
 numpy
-#spotfyapiとの通信
+noisereduce
+#spotfyapi
+spotipy
