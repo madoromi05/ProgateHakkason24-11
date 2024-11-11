@@ -25,13 +25,13 @@ def pitch_in_range(track_key, track_mode):
         base_pitch *= 0.9
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
-def recommend_japanese_songs(limit=50):
+def recommend_japanese_songs(limit=30):
     recommended_tracks = []
     offset = 0
 
     while len(recommended_tracks) < limit:
         # 日本市場に限定して検索
-        results = sp.search(q='year:2020-2023', type='track', limit=50, offset=offset, market='JP')
+        results = sp.search(q='year:2020-2023', type='track', limit=30, offset=offset, market='JP')
 
         for track in results['tracks']['items']:
             if len(recommended_tracks) >= limit:
@@ -44,12 +44,10 @@ def recommend_japanese_songs(limit=50):
                 recommended_tracks.append({
                     'name': track['name'],
                     'artist': track['artists'][0]['name'],
-                    'key': features['key'],
-                    'mode': features['mode'],
                 })
 
-        offset += 50
-        if len(results['tracks']['items']) < 50:
+        offset += 30
+        if len(results['tracks']['items']) < 30:
             break
 
     return recommended_tracks

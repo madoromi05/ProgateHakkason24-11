@@ -39,8 +39,6 @@ def get_tracks():
         {
             "name": song['name'],
             "artist": song['artist'],
-            "key": song['key'],
-            "mode": "マイナー" if song['mode'] == 0 else "メジャー"
         }
         for song in recommended_songs
     ]
