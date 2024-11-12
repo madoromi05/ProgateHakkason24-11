@@ -44,7 +44,7 @@ h1{
   }
   
   .result_button a:hover {
-    background-color: #45a049;
+    background-color: #4CAF50;
   }
 /*録音ボタン*/
   .img_index_recording {
@@ -69,8 +69,8 @@ h1{
   .bright-button {
     padding: 15px 30px;
     font-size: 18px;
-    background-color: #FFD700;
-    color: #000000;
+    background-color: #4CAF50;
+    color: #FFFFFF;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -78,5 +78,5 @@ h1{
   }
 
   .bright-button:hover {
-    background-color: #FFC300;
+    background-color: #4CAF50;
   }

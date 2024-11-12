@@ -25,7 +25,7 @@ def pitch_in_range(track_key, track_mode):
         base_pitch *= 0.9
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
-def recommend_japanese_songs(limit=30):
+def recommend_japanese_songs(limit=20):
     recommended_tracks = []
     offset = 0
 
@@ -46,8 +46,8 @@ def recommend_japanese_songs(limit=30):
                     'artist': track['artists'][0]['name'],
                 })
 
-        offset += 30
-        if len(results['tracks']['items']) < 30:
+        offset += 20
+        if len(results['tracks']['items']) < 20:
             break
 
     return recommended_tracks

@@ -25,7 +25,7 @@ def pitch_in_range(track_key, track_mode):
         base_pitch *= 0.9
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
-def recommend_japanese_songs(limit=50):
+def recommend_japanese_songs(limit=20):
     recommended_tracks = []
     offset = 0
 
@@ -49,8 +49,8 @@ def recommend_japanese_songs(limit=50):
                     'danceability': features['danceability'],
                 })
 
-        offset += 50
-        if len(results['tracks']['items']) < 50:
+        offset += 20
+        if len(results['tracks']['items']) < 20:
             break
 
     return recommended_tracks
@@ -64,8 +64,3 @@ for i, song in enumerate(recommended_songs, 1):
     print(f"   キー: {song['key']}, モード: {'マイナー' if song['mode'] == 0 else 'メジャー'}")
     print(f"   ダンス性: {song['danceability']:.2f}")
     print()
-
-# 結果をCSVファイルに保存
-df = pd.DataFrame(recommended_songs)
-df.to_csv('recommended_japanese_songs.csv', index=False, encoding='utf-8-sig')
-print("推薦曲リストをrecommended_japanese_songs.csvに保存しました。")
