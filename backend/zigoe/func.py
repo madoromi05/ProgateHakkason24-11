@@ -1,6 +1,8 @@
-import time
+
+import numpy as np
 FRAMERATE=44100
 def time_decorator(func):
+    import time
     def wrapper(*args, **kwargs):
         start_time = time.time()  # 開始時刻を記録
         result = func(*args, **kwargs)  # 関数を実行
@@ -11,13 +13,12 @@ def time_decorator(func):
     return wrapper
 
 
-from collections.abc import Iterable
 def is_iterable(x):
+    from collections.abc import Iterable
     return isinstance(x, Iterable) and not isinstance(x, (str, bytes))
 
-
-import importlib
 def auto_import(modules):
+    import importlib
     for module,asname,where in modules:
         if asname:
             module_name=asname
@@ -43,9 +44,8 @@ def formatingnumpy(data,yoko=True):
         print("不正な音声データです")
         return data
 
-from scipy.io.wavfile import write
-import numpy as np
 def writerwav(data,file="output.wav"):
+    from scipy.io.wavfile import write
     if data.ndim == 1:
         data=np.clip(data, -1.0, 1.0)
         #data = (data * 65534).astype(np.uint16)
@@ -61,9 +61,9 @@ def writerwav(data,file="output.wav"):
 
 
 
-from scipy.io.wavfile import read
-import os
 def loadwav(file="input.wav"):
+    import os
+    from scipy.io.wavfile import read
     sample_rate, data = read(os.path.abspath(file))
     if data.dtype == np.int16:
         data = data / 32768.0  # 16ビットの範囲をfloat32にスケーリング

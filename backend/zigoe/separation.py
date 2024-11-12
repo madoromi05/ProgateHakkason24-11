@@ -1,16 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from demucs import pretrained
-from demucs.apply import apply_model
-import torch
-from func import auto_import,writerwav,loadwav,formatingnumpy
+from func import writerwav,loadwav,formatingnumpy
 """
 このファイル内では関数の引数と返り値にモノラルのnumpy音声データ
 """
 def separation_demucs(audio):
-    #動的インポート
-    #auto_import([("numpy","np",None),("load_pretrained",None, "demucs.pretrained"),("apply_model",None, "demucs.demucs.apply")])
-    
+    from demucs import pretrained
+    from demucs.apply import apply_model
+    import torch
+
     audio_data = np.expand_dims(audio, axis=0) 
     audio_tensor = torch.tensor(audio_data)
     model = pretrained.get_model("htdemucs")
@@ -27,8 +25,7 @@ def separation_demucs(audio):
     return vocals.numpy()
 if __name__=="__main__":
     import librosa
-    import sys
-    import os
+    import sys,os
 
     if len(sys.argv)<=1:
         print("引数出せ")
