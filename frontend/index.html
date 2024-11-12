@@ -7,10 +7,20 @@
     <link rel="stylesheet" href="./src/css/style.css" /> <!-- CSSファイルの読み込み -->
     <title>Karaoke Ontei</title>
   </head>
+
   <body>
     <div id="root"></div>
-    <div class="midashi">アプリ名</div>
-    <script type="module" src="/src/main.jsx"></script>
-    <button class="button" onclick="location.href='./singing_voice.html'">音程を測る</button>
+    <h1>音程を計測しよう!!</h1>
+    <div class="img_index_recording">
+      <img src="./src/assets/rokuonn.png" alt="録音">
+    </div>
+
+
+    <div class="result_button">
+      <a href="./result.html">結果を見る</a>
+    </div>
+
+    <!-- 外部JavaScriptファイルの読み込み -->
+    <script src="./script.jsx"></script>
   </body>
 </html>
