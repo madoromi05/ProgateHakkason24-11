@@ -4,21 +4,23 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import rokuonnImage from './assets/rokuonn.png'
 import './App.css'
+import './App.css'
 
 function App() {
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/hello')
-      .then(response => setMessage(response.data.message))
-      .catch(error => console.error('Error:', error));
-  }, []);
+    console.log("Recording state changed:", isRecording);
+  }, [isRecording]);
 
-  const handleRecordingClick = () => {
-    setIsRecording(!isRecording);
-    // ここに録音の開始/停止のロジックを追加できます
-  };
+  const [, forceUpdate] = useState({});
+  const RecordingStatus = ({ isRecording }) => (
+    isRecording ? <p className="recording-text">録音中</p> : null
+  );
+  
+  // App.jsxの中で
+  <RecordingStatus isRecording={isRecording} />
 
   return (
     <div className="App">
@@ -31,7 +33,11 @@ function App() {
           style={{ cursor: 'pointer' }}
         />
       </div>
-      {isRecording && <p className="recording-text">録音中</p>}
+      <div style={{height: '30px', marginTop: '10px'}}>
+        {isRecording ? (
+          <p className="recording-text">録音中</p>
+        ) : null}
+      </div>
       <div className="result_button">
         <a href="./result.html">結果を見る</a>
       </div>
