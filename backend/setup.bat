@@ -4,9 +4,10 @@ call myvenv\Scripts\activate.bat
 python --version
 echo 仮想環境起動
 python.exe -m pip install --upgrade pip
+pip install librosa
 if exist requirements.txt (
     echo ミッケ
-    pip install -r requirements.txt
+    echo pip install -r requirements.txt
 ) else (
     echo requirements.txt が見つかりません。
 )
