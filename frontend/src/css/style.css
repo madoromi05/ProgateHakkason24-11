@@ -1,0 +1,79 @@
+
+.midashi{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25vh; /* 画面全体の高さ */
+    font-size: 7em; /* 見出しの文字サイズ */
+    text-align: center;
+}
+
+.button{
+    position: absolute;
+    bottom: 10%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の中央 */
+    transform: translateX(-50%); /* 中央揃え */
+    font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+}
+
+.modoru{
+    position: absolute;
+    bottom: 10%; /* 画面下から20pxの位置に配置 */
+    left: 15%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+    font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+}
+
+.susumu{
+    position: absolute;
+    bottom: 10%; /* 画面下から20pxの位置に配置 */
+    left: 85%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+    font-size: 1.5em; /* ボタン内のテキストサイズを調整 */
+    padding: 10px 20px; /* ボタンの内側の余白 */
+}
+
+
+img.rokuonnB{
+    position: absolute;
+    bottom: 30%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+    width: 96px;
+    height: 120px;
+}
+
+.recording-text {
+    display: none; /* デフォルトで非表示 */
+    color: red;
+    font-size: 16px;
+    margin-top: 8px;
+    position: absolute;
+    bottom: 25%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+}
+
+/* rokuonn画像をホバーした */
+img.rokuonnB:hover{
+    position: absolute;
+    bottom: 30%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+    width: 96px;
+    height: 120px;
+	/* リンクをホバーしたときのカーソルにする。*/
+	cursor: pointer;
+}
+ 
+/* rokuonn画像をクリックした瞬間 */
+img.rokuonnB:active{
+    position: absolute;
+    bottom: 29%; /* 画面下から20pxの位置に配置 */
+    left: 50%; /* 画面の左側 */
+    transform: translateX(-50%); /* 中央揃え */
+    width: 96px;
+    height: 120px;
+}
