@@ -8,7 +8,7 @@ def separation_demucs(audio):
     from demucs import pretrained
     from demucs.apply import apply_model
     import torch
-
+    audio=formatingnumpy(audio,yoko=True)
     audio_data = np.expand_dims(audio, axis=0) 
     audio_tensor = torch.tensor(audio_data)
     model = pretrained.get_model("htdemucs")

@@ -26,9 +26,11 @@ def extraction_crepe(audio):
     time, frequency, confidence, activation = crepe.predict(audio, audio.frame_rate, viterbi=True)
     return frequency
 if __name__=="__main__":
-    from func import loadwav
+    from func import loadwav,writerwav
     import sys,os
-    if(sys.argv>1):
-        extraction_harvest(loadwav(os.path.abspath(sys.argv[1])))
+    if len(sys.argv)<=1:
+        print("引数出せ")
+        filepath=r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.518347.wav"
     else:
-        print("引数をくれ")
+        filepath=os.path.abspath(sys.argv[1])
+    extraction_harvest(loadwav(filepath))

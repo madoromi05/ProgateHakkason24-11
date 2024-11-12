@@ -58,7 +58,14 @@ def writerwav(data,file="output.wav"):
         write(file,FRAMERATE, ndata)
     else:
         print("不正な音声データです")
-
+def writerpng(data,file="output.wav"):
+    import matplotlib.pyplot as plt
+    if data.ndim == 2 :
+        data=formatingnumpy(data,yoko=True)[0]
+    fig, ax = plt.subplots()
+    ax.plot(data)
+    ax.grid()
+    fig.savefig(file)
 
 
 def loadwav(file="input.wav"):

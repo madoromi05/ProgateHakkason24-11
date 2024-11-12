@@ -9,7 +9,9 @@ def min_max_pitch(audio):
 if __name__=="__main__":
     from func import loadwav
     import sys,os
-    if(sys.argv>1):
-        min_max_pitch(loadwav(os.path.abspath(sys.argv[1])))
+    if len(sys.argv)<=1:
+        print("引数出せ")
+        filepath=r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.518347.wav"
     else:
-        print("引数をくれ")
+        filepath=os.path.abspath(sys.argv[1])
+    min_max_pitch(loadwav(filepath))
