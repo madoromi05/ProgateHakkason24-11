@@ -26,8 +26,8 @@ function App() {
     <div className="App">
       <h1>音程を計測しよう!!</h1>
       <div className="img_index_recording">
-        <img 
-          src={rokuonnImage} 
+        <img
+          src={rokuonnImage}
           alt="録音"
           onClick={handleRecordingClick}
           style={{ cursor: 'pointer' }}
