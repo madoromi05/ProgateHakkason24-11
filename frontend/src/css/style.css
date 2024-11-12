@@ -80,3 +80,19 @@ h1{
   .bright-button:hover {
     background-color: #FFC300;
   }
+
+  .recording-text {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .img_index_recording img {
+    width: 96px;
+    height: 120px;
+    transition: transform 0.1s;
+  }
+  
+  .img_index_recording img:active {
+    transform: translateY(2px);
+  }
