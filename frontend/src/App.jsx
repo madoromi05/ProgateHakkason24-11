@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
@@ -7,9 +7,47 @@ import './App.css';
 
 function App() {
   const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const socketRef = useRef(null);
 
-  const handleRecordingClick = () => {
-    setIsRecording(!isRecording);
+  useEffect(() => {
+    // WebSocketの接続
+    socketRef.current = new WebSocket('ws://your-backend-url'); // バックエンドのURLに置き換えてください
+
+    socketRef.current.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    socketRef.current.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      // クリーンアップ
+      socketRef.current.close();
+    };
+  }, []);
+
+  const handleRecordingClick = async () => {
+    if (isRecording) {
+      // 録音停止
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    } else {
+      // 録音開始
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+          // 音声データを送信
+          socketRef.current.send(event.data);
+        }
+      };
+
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    }
   };
 
   return (
