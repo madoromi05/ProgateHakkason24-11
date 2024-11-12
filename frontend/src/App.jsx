@@ -1,40 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import rokuonnImage from './assets/rokuonn.png'
+import './App.css'
 import './App.css'
 
 function App() {
   const [message, setMessage] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/hello')
-      .then(response => setMessage(response.data.message))
-      .catch(error => console.error('Error:', error));
-  }, []);
+    console.log("Recording state changed:", isRecording);
+  }, [isRecording]);
+
+  const [, forceUpdate] = useState({});
+  const RecordingStatus = ({ isRecording }) => (
+    isRecording ? <p className="recording-text">録音中</p> : null
+  );
+  
+  // App.jsxの中で
+  <RecordingStatus isRecording={isRecording} />
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="App">
+      <h1>音程を計測しよう!!</h1>
+      <div className="img_index_recording">
+        <img 
+          src={rokuonnImage} 
+          alt="録音"
+          onClick={handleRecordingClick}
+          style={{ cursor: 'pointer' }}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div style={{height: '30px', marginTop: '10px'}}>
+        {isRecording ? (
+          <p className="recording-text">録音中</p>
+        ) : null}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <div className="result_button">
+        <a href="./result.html">結果を見る</a>
+      </div>
+    </div>
   )
 }
 
