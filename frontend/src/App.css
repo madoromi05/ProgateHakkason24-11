@@ -89,6 +89,7 @@ h1{
 .result_button a:hover {
   background-color: #45a049;
 }
+
 /*録音ボタン*/
 .img_index_recording {
   display: flex;
