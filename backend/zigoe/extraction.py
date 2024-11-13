@@ -6,6 +6,7 @@ def extraction_stonemask(audio):# ピッチ推定の設定
     import pyworld as pw
     if len(audio.shape) == 2:
         audio = audio.mean(axis=1)  # ステレオをモノラルに変換
+    audio = audio.astype(np.float64)
     audio = audio / np.max(np.abs(audio))
     
     _f0, t = pw.dio(audio, FRAMERATE) 

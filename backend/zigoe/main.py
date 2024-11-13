@@ -1,7 +1,7 @@
 from separation import separation_demucs
 from extraction import extraction_crepe,extraction_harvest,extraction_pyin,extraction_stonemask
 from antiecho import echoproces,dummyproces
-from pitch import min_max_pitch
+from pitch import *
 from func import loadwav,writerpng
 import sys,os
 def main(audio_data):
@@ -11,10 +11,15 @@ def main(audio_data):
     print("aa2")
     audio_data=dummyproces(audio_data)
     print("aa3")
-    audio_data=extraction_harvest(audio_data)
-    print("aa4")
-    writerpng(audio_data,file="bunri2.png")
-    return min_max_pitch(audio_data)
+    data=extraction_harvest(audio_data)
+    writerpng(data,file="bunri3.png")
+    audio_data=min_max_pitch(data)
+    writerpng(audio_data,file="bunri3mm.png")
+    max_pitch = np.max(audio_data)
+    min_pitch = np.min(audio_data)
+
+    print(f"最高音の高さ: {max_pitch}")
+    print(f"最低音の高さ: {min_pitch}")
 
 
 
