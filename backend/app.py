@@ -25,24 +25,28 @@ def hello():
 
 @app.route('/tracks', methods=['GET'])
 def get_tracks():
+    try:
     # 推薦曲リストを取得
-    recommended_songs = get_recommended_songs()
-#確認LOG
-    if recommended_songs:
-        print("曲のリストが正常に取得できました:")
-        for i, song in enumerate(recommended_songs, 1):
-            print(f"{i}. {song['name']} by {song['artist']}")
-    else:
-        print("曲のリストが取得できませんでした。")
-    # 曲情報をレスポンス用に準備
-    songs_info = [
-        {
-            "name": song['name'],
-            "artist": song['artist'],
-        }
-        for song in recommended_songs
-    ]
-    return jsonify(songs_info)  # JSONとして返す
+        recommended_songs = get_recommended_songs()
+        #確認LOG
+        if recommended_songs:
+            print("曲のリストが正常に取得できました:")
+            for i, song in enumerate(recommended_songs, 1):
+                print(f"{i}. {song['name']} by {song['artist']}")
+        else:
+            print("曲のリストが取得できませんでした。")
+        # 曲情報をレスポンス用に準備
+        songs_info = [
+            {
+                "name": song['name'],
+                "artist": song['artist'],
+            }
+            for song in recommended_songs
+        ]
+        return jsonify(songs_info)  # JSONとして返す
+    except Exception as e:
+        print(f"エラーが発生しました: {e}")  # エラーログを出力
+        return jsonify({"error": "曲の取得に失敗しました。"}), 500 
 
 def save_audio(data, filename="received_audio.wav"):
     audio = AudioSegment.from_file(io.BytesIO(data), format="wav")

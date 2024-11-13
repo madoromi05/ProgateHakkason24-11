@@ -1,6 +1,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
+from flask import Flask, jsonify
 
 # Spotify API認証
 client_id = '20e9a4be685749e2bf74fa422a90ee77'
@@ -52,6 +53,13 @@ def recommend_japanese_songs(limit=30):
 
     return recommended_tracks
 
-# 推薦曲の取得と表示
-def get_recommended_songs():
-    return recommend_japanese_songs()
+# 推薦曲の取得と送信
+app = Flask(__name__)
+
+@app.route('/tracks', methods=['GET'])
+def get_tracks():
+    tracks = recommend_japanese_songs()
+    return jsonify(tracks)
+
+if __name__ == '__main__':
+    app.run(debug=True)
