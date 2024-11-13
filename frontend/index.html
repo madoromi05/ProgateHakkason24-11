@@ -4,23 +4,12 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./src/App.css" /> <!-- CSSファイルの読み込み -->
+    <link rel="stylesheet" href="./src/App.css" />
     <title>Karaoke Ontei</title>
   </head>
 
   <body>
-    <div id="root"></div>
-    <h1>音程を計測しよう!!</h1>
-    <div class="img_index_recording">
-      <img src="./src/assets/rokuonn.png" alt="録音">
-    </div>
-
-
-    <div class="result_button">
-      <a href="./result.html">結果を見る</a>
-    </div>
-
-    <!-- 外部JavaScriptファイルの読み込み -->
-    <script type="./src/App.jsx"></script>
+    <div id="root"></div> <!-- Reactアプリがここにレンダリングされる -->
+    <script type="module" src="./src/main.jsx"></script> <!-- メインJSファイルを読み込む -->
   </body>
 </html>

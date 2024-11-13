@@ -45,7 +45,8 @@ h1{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 25vh; /* 画面全体の高さ */
+  color: #000000;
+  height: 35vh; /* 画面全体の高さ */
   font-size: 7em; /* 見出しの文字サイズ */
   text-align: center;
 }
@@ -71,7 +72,7 @@ h1{
 
 /*結果表示ボタン*/
 .result_button {
-  text-align: right;
+  text-align: center;
   margin: 20px 0;
 }
 
@@ -88,6 +89,7 @@ h1{
 .result_button a:hover {
   background-color: #45a049;
 }
+
 /*録音ボタン*/
 .img_index_recording {
   display: flex;
@@ -137,4 +139,8 @@ h1{
 
 .img_index_recording img:active {
   transform: translateY(2px);
+}
+
+body {
+  background-color: white;
 }
