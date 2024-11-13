@@ -9,7 +9,7 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
   const socketRef = useRef(null);
-
+ 
   useEffect(() => {
     // WebSocketの接続
     socketRef.current = new WebSocket('ws://your-backend-url'); // バックエンドのURLに置き換えてください

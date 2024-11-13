@@ -8,7 +8,7 @@ function Result() {
       {/* 結果表示用のコンテンツをここに追加 */}
       <div className="button-container">
         <button className="bright-button" onClick={() => window.location.href='./index.html'}>
-          One More Recording
+          もう一度計測する
         </button>
       </div>
     </div>
