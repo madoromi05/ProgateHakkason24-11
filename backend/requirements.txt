@@ -3,8 +3,11 @@ Flask
 Flask-Cors
 Flask-SocketIO
 #zigoe
+numpy==1.26.4
 pydub
-numpy
+pyworld
+demucs
+librosa
 noisereduce
 #spotfyapi
 spotipy

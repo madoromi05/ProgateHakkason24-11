@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 */__pycache__/
+backend/testvenv/
+*.mp4
+*__pycache__*

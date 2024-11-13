@@ -1,3 +1,5 @@
+def func(audio):
+    #兵站か
 def min_max_pitch(audio):
     pass
 

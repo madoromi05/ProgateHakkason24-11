@@ -1,3 +1,4 @@
+## 処理ごとに
 前処理
 PyDub
 分離
@@ -7,3 +8,7 @@ stft
 1.pyworld
 2.SciPy
 3.Librose
+## ライブラリについて
+pyworld->numpy最新版
+librossa->numpy少し古め
+Spleeter->numpy古め
