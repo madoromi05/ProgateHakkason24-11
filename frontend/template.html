@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>おすすめの曲</title>
+    <title>Recommended Songs</title>
 </head>
 <body>
-    <h1>おすすめの曲</h1>
-
-    {% if error %}  <!-- エラーメッセージがあれば表示 -->
-        <p style="color: red;">{{ error }}</p>
-    {% else %}
-        <ul>
-            {% for song in songs %}
-                <li>{{ song.name }} by {{ song.artist }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
+    <h1>Recommended Songs</h1>
+    <ul>
+        {% for song in songs %}
+            <li>{{ song.name }} by {{ song.artist }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

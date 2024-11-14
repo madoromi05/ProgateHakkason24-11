@@ -9,9 +9,9 @@ client_secret = 'c2ebbce0ad1d4b43b086e377fa1368f5'
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
-# ユーザーの声域データ
-user_lowest_pitch = float(input("あなたの最低音をHz単位で入力してください（例: 130）: "))
-user_highest_pitch = float(input("あなたの最高音をHz単位で入力してください（例: 523）: "))
+# ユーザーの声域データ,testのために固定
+user_lowest_pitch = 130
+user_highest_pitch = 523
 
 # キーと音程の対応表
 key_pitch_map = {
@@ -20,46 +20,37 @@ key_pitch_map = {
     10: 466.16, 11: 493.88
 }
 
-def pitch_in_range(track_key, track_mode):
+def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch):
     base_pitch = key_pitch_map[track_key]
     if track_mode == 0:  # マイナーキーの場合
         base_pitch *= 0.9
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
-def recommend_japanese_songs(limit=30):
+def get_recommended_songs(user_lowest_pitch, user_highest_pitch, limit=30):
     recommended_tracks = []
     offset = 0
 
     while len(recommended_tracks) < limit:
-        # 日本市場に限定して検索
-        results = sp.search(q='year:2020-2023', type='track', limit=30, offset=offset, market='JP')
+        #日本市場100曲から30曲選ぶ
+        results = sp.search(q='year:2020-2023', type='track', limit=100, offset=offset, market='JP') # limitを大きくして検索効率アップ
 
         for track in results['tracks']['items']:
             if len(recommended_tracks) >= limit:
                 break
 
             track_id = track['id']
-            features = sp.audio_features(track_id)[0]
+            try: # API呼び出しエラーをtry-exceptで処理
+                features = sp.audio_features(track_id)[0]
+                if features and pitch_in_range(features['key'], features['mode'], user_lowest_pitch, user_highest_pitch):
+                    recommended_tracks.append({
+                        'name': track['name'],
+                        'artist': track['artists'][0]['name'],
+                    })
+            except Exception as e:
+                print(f"Error getting audio features for track {track_id}: {e}")
 
-            if features and pitch_in_range(features['key'], features['mode']):
-                recommended_tracks.append({
-                    'name': track['name'],
-                    'artist': track['artists'][0]['name'],
-                })
-
-        offset += 30
-        if len(results['tracks']['items']) < 30:
+        offset += 100
+        if not results['tracks']['items']: # 検索結果が空ならループを抜ける
             break
 
     return recommended_tracks
-
-# 推薦曲の取得と送信
-app = Flask(__name__)
-
-@app.route('/tracks', methods=['GET'])
-def get_tracks():
-    tracks = recommend_japanese_songs()
-    return jsonify(tracks)
-
-if __name__ == '__main__':
-    app.run(debug=True)
