@@ -7,25 +7,38 @@ import './App.css';
 
 function App() {
   const [isRecording, setIsRecording] = useState(false);
+  const [dataSent, setDataSent] = useState(0);
   const mediaRecorderRef = useRef(null);
   const socketRef = useRef(null);
  
   useEffect(() => {
-    // WebSocketの接続
-    socketRef.current = new WebSocket('ws://127.0.0.1:5000/socket.io/'); // バックエンドのURLに置き換えてください
-    socketRef.current.log
-    console.log("start")
-    socketRef.current.onopen = () => {
-      console.log('WebSocket connection established');
-      socketRef.current.send(JSON.stringify({ event: 'connect' })); // 接続時のイベント送信
+    const connectWebSocket = () => {
+      const ws = new WebSocket('ws://localhost:5000');
+  
+      ws.onopen = () => {
+        console.log('WebSocket接続確立');
+        socketRef.current = ws;
+      };
+  
+      ws.onerror = (error) => {
+        console.error('WebSocketエラー:', error);
+      };
+  
+      ws.onclose = (event) => {
+        console.log('WebSocket接続終了:', event.code, event.reason);
+        // 再接続を試みる
+        setTimeout(connectWebSocket, 3000);
+      };
+  
+      socketRef.current = ws;
     };
-    socketRef.current.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-
+  
+    connectWebSocket();
+  
     return () => {
-      // クリーンアップ
-      socketRef.current.close();
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
     };
   }, []);
 
@@ -36,18 +49,25 @@ function App() {
       setIsRecording(false);
     } else {
       // 録音開始
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorderRef.current = new MediaRecorder(stream);
 
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-          // 音声データを送信
-          socketRef.current.send(event.data);
-        }
-      };
+        mediaRecorderRef.current.ondataavailable = (event) => {
+          if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            // 音声データを送信
+            socketRef.current.send(event.data);
+            console.log('音声データ送信:', event.data.size, 'バイト');
+            setDataSent(prevData => prevData + event.data.size);
+          }
+        };
 
-      mediaRecorderRef.current.start();
-      setIsRecording(true);
+        mediaRecorderRef.current.start();
+        setIsRecording(true);
+        setDataSent(0); // 新しい録音セッションを開始するときにリセット
+      } catch (error) {
+        console.error('メディアデバイスへのアクセスエラー:', error);
+      }
     }
   };
 
@@ -64,6 +84,9 @@ function App() {
       </div>
       <div style={{ height: '30px', marginTop: '10px' }}>
         {isRecording && <p className="recording-text">録音中</p>}
+      </div>
+      <div>
+        {isRecording && <p>送信されたデータ: {dataSent} バイト</p>}
       </div>
       <div className="result_button">
         <a href="./result.html">結果を見る</a>
