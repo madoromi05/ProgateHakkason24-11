@@ -15,8 +15,7 @@ def spotfyapi(data):
 def zigoe():
     return "受信成功"
 '''
-frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../frontend'))
-app = Flask(__name__, template_folder=frontend_dir)
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '../frontend'))
 socketio = SocketIO(app, async_mode='threading')
 CORS(app)  # すべてのオリジンからのアクセスを許可
 websocket_result=None
@@ -28,9 +27,8 @@ def hello():
 #曲リストGET
 @app.route('/tracks', methods=['GET'])
 def get_tracks():
-    print("get_tracks\n")
     try:
-        print("recommended_call")
+        print("recommended_not_coll")
         recommended_songs = get_recommended_songs() # recommend_songs.pyの関数を呼び出す
         songs_info = [
             {
@@ -47,14 +45,13 @@ def get_tracks():
         return jsonify({"error": "曲の取得に失敗しました。"}), 500
 
 @app.route('/')
-def index():
+def index():  # ルートパスをindex()に変更
     try:
-        recommended_songs = get_recommended_songs() # デフォルトの音程値で呼び出すか、指定する
-        return render_template('../frontend/template.html', songs=recommended_songs)
+        recommended_songs = get_recommended_songs()
+        return render_template('../frontend/template.html', songs=recommended_songs) # template.htmlにsongs変数として渡す
     except Exception as e:
         print(f"Error getting tracks: {e}")
-        return "Error getting tracks", 500  # エラーレスポンスを返す
-
+        return "Error getting tracks", 500
 
 '''
 def save_audio(data, filename="received_audio.wav"):

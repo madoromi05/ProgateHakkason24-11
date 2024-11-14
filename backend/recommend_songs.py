@@ -2,6 +2,9 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 from flask import Flask, jsonify
+from flask import Flask, render_template, jsonify
+
+app = Flask(__name__, template_folder='../frontend')
 
 # Spotify API認証
 client_id = '20e9a4be685749e2bf74fa422a90ee77'
@@ -27,6 +30,7 @@ def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch)
         base_pitch *= 0.9
     print(f"Base pitch: {base_pitch}")
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
+
 #ここで固定しないと曲が表示されない？
 def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30):
     recommended_tracks = []
@@ -58,11 +62,18 @@ def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=3
                             'name': track['name'],
                             'artist': track['artists'][0]['name'],
                         })
+                else:
+                    print(f"Features is None for track: {track.get('name', 'Unknown')}")
 
         except Exception as e:
             print(f"Error during sp.search: {e}")
             return [] # 検索エラー時に空のリストを返す
 
-        offset += 50
-
     return recommended_tracks
+@app.route('/')
+def index():
+    songs = get_recommended_songs() # 曲リストを取得
+    return render_template('template.html', songs=songs) # テンプレートにデータを渡す
+
+if __name__ == '__main__':
+    app.run(debug=True)
