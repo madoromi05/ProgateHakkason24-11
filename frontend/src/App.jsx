@@ -12,7 +12,7 @@ function App() {
  
   useEffect(() => {
     // WebSocketの接続
-    socketRef.current = new WebSocket('ws://your-backend-url'); // バックエンドのURLに置き換えてください
+    socketRef.current = new WebSocket('http://127.0.0.1:5000/'); // バックエンドのURLに置き換えてください
 
     socketRef.current.onopen = () => {
       console.log('WebSocket connection established');

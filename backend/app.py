@@ -2,7 +2,7 @@ from flask import Flask, render_template,jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from pydub import AudioSegment
-from recommend_songs import get_recommended_songs
+#from recommend_songs import get_recommended_songs
 #from zigoe.test import zigoe
 #from spotfyapi.test import spotfyapi
 import io
@@ -22,7 +22,9 @@ websocket_result=None
 @app.route('/')
 def hello():
     return 'Hello, CORS!'
-
+@app.route('/test', methods=['GET'])
+def test():
+    pass
 @app.route('/tracks', methods=['GET'])
 def get_tracks():
     try:
@@ -55,10 +57,12 @@ def save_audio(data, filename="received_audio.wav"):
     #ここで呼び出し
     websocket_result=zigoe(audio)
 
+import scipy.io.wavfile as wav
 @socketio.on('audio')
 def handle_audio(data):
     print('音声データを受信しました')
     save_audio(data)
+    wav.write("output.wav",44100,data)
 
 # サーバー終了時にファイルを閉じる
 @socketio.on('disconnect')
