@@ -12,12 +12,13 @@ function App() {
  
   useEffect(() => {
     // WebSocketの接続
-    socketRef.current = new WebSocket('http://127.0.0.1:5000/'); // バックエンドのURLに置き換えてください
-
+    socketRef.current = new WebSocket('ws://127.0.0.1:5000/socket.io/'); // バックエンドのURLに置き換えてください
+    socketRef.current.log
+    console.log("start")
     socketRef.current.onopen = () => {
       console.log('WebSocket connection established');
+      socketRef.current.send(JSON.stringify({ event: 'connect' })); // 接続時のイベント送信
     };
-
     socketRef.current.onclose = () => {
       console.log('WebSocket connection closed');
     };

@@ -1,43 +1,21 @@
 from flask import Flask, render_template,jsonify
 from flask_cors import CORS
-from flask_socketio import SocketIO, emit
-from pydub import AudioSegment
-#from recommend_songs import get_recommended_songs
-#from zigoe.test import zigoe
-#from spotfyapi.test import spotfyapi
+from flask_socketio import SocketIO,emit
+import os
 import io
-import numpy as np
-
-def spotfyapi(data):
-    return "これで{"+data+"}よさそう"
-
-def zigoe():
-    return "受信成功"
-
-app = Flask(__name__)
+def get_recommended_songs(): raise ZeroDivisionError("ee")
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '../frontend'))
 CORS(app)  # すべてのオリジンからのアクセスを許可
-socketio = SocketIO(app)
-websocket_result=None
-
-@app.route('/')
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
+@app.route('/cors')
 def hello():
     return 'Hello, CORS!'
-@app.route('/test', methods=['GET'])
-def test():
-    pass
+#曲リストGET
 @app.route('/tracks', methods=['GET'])
 def get_tracks():
     try:
-    # 推薦曲リストを取得
-        recommended_songs = get_recommended_songs()
-        #確認LOG
-        if recommended_songs:
-            print("曲のリストが正常に取得できました:")
-            for i, song in enumerate(recommended_songs, 1):
-                print(f"{i}. {song['name']} by {song['artist']}")
-        else:
-            print("曲のリストが取得できませんでした。")
-        # 曲情報をレスポンス用に準備
+        print("recommended_not_coll")
+        recommended_songs = get_recommended_songs() # recommend_songs.pyの関数を呼び出す
         songs_info = [
             {
                 "name": song['name'],
@@ -45,29 +23,41 @@ def get_tracks():
             }
             for song in recommended_songs
         ]
-        return jsonify(songs_info)  # JSONとして返す
+
+        return jsonify(songs_info)
+
     except Exception as e:
-        print(f"エラーが発生しました: {e}")  # エラーログを出力
-        return jsonify({"error": "曲の取得に失敗しました。"}), 500 
+        print(f"Error getting tracks: {e}")
+        return jsonify({"error": "曲の取得に失敗しました。"}), 500
 
-def save_audio(data, filename="received_audio.wav"):
-    audio = AudioSegment.from_file(io.BytesIO(data), format="wav")
-    audio.export(filename, format="wav")
+@app.route('/')
+def index():  # ルートパスをindex()に変更
+    try:
+        recommended_songs = get_recommended_songs()
+        return render_template('../frontend/template.html', songs=recommended_songs) # template.htmlにsongs変数として渡す
+    except Exception as e:
+        print(f"Error getting tracks: {e}")
+        return "Error getting tracks", 500
 
-    #ここで呼び出し
-    websocket_result=zigoe(audio)
 
-import scipy.io.wavfile as wav
-@socketio.on('audio')
-def handle_audio(data):
-    print('音声データを受信しました')
-    save_audio(data)
-    wav.write("output.wav",44100,data)
+# WebSocket接続時
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+    emit('message', {'data': 'Welcome to the WebSocket Audio server!'})
 
-# サーバー終了時にファイルを閉じる
-@socketio.on('disconnect')
-def disconnect():
-    print("クライアントが切断されました")
+# 音声データを受信
+@socketio.on('audio_data')
+def handle_audio_data(data):
+    print(f"Received audio data, size: {len(data)} bytes")
+    
+    # 受信した音声データを処理する（ここでは保存しませんが、音声処理や保存を行うことができます）
+    audio_file = io.BytesIO(data)  # バイナリデータをファイルとして扱う
+    with open('received_audio.wav', 'wb') as f:
+        f.write(audio_file.read())
+    emit('message', {'data': 'Audio received successfully!'})
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

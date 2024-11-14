@@ -2,6 +2,9 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 from flask import Flask, jsonify
+from flask import Flask, render_template, jsonify
+
+app = Flask(__name__, template_folder='../frontend')
 
 # Spotify API認証
 client_id = '20e9a4be685749e2bf74fa422a90ee77'
@@ -9,9 +12,9 @@ client_secret = 'c2ebbce0ad1d4b43b086e377fa1368f5'
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
-# ユーザーの声域データ
-user_lowest_pitch = float(input("あなたの最低音をHz単位で入力してください（例: 130）: "))
-user_highest_pitch = float(input("あなたの最高音をHz単位で入力してください（例: 523）: "))
+# ユーザーの声域データ,testのために固定
+user_lowest_pitch = 130
+user_highest_pitch = 523
 
 # キーと音程の対応表
 key_pitch_map = {
@@ -20,46 +23,57 @@ key_pitch_map = {
     10: 466.16, 11: 493.88
 }
 
-def pitch_in_range(track_key, track_mode):
+def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch):
+    print(f"Checking pitch_in_range for key: {track_key}, mode: {track_mode}")
     base_pitch = key_pitch_map[track_key]
     if track_mode == 0:  # マイナーキーの場合
         base_pitch *= 0.9
+    print(f"Base pitch: {base_pitch}")
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
-def recommend_japanese_songs(limit=30):
+#ここで固定しないと曲が表示されない？
+def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30):
     recommended_tracks = []
     offset = 0
+    print("Entering get_recommended_songs")
 
     while len(recommended_tracks) < limit:
-        # 日本市場に限定して検索
-        results = sp.search(q='year:2020-2023', type='track', limit=30, offset=offset, market='JP')
+        try:
+            results = sp.search(q='year:2020-2023', type='track', limit=50, offset=offset, market='JP') # limit を 50 に減らす
+            if not results['tracks']['items']:  # 結果が空かどうかを確認する
+                print("tracks=NULL")
+                break  # 空の場合はループを抜ける
 
-        for track in results['tracks']['items']:
-            if len(recommended_tracks) >= limit:
-                break
+            track_ids = [track['id'] for track in results['tracks']['items']]
+            try:
+                features_list = sp.audio_features(track_ids) # オーディオ機能の一括リクエスト
+            except Exception as e:
+                print(f"Error getting audio features: {e}")
+                break # 無限ループを避けるためにエラー時にループを抜ける
 
-            track_id = track['id']
-            features = sp.audio_features(track_id)[0]
+            for i, track in enumerate(results['tracks']['items']):
+                if len(recommended_tracks) >= limit:
+                    break
 
-            if features and pitch_in_range(features['key'], features['mode']):
-                recommended_tracks.append({
-                    'name': track['name'],
-                    'artist': track['artists'][0]['name'],
-                })
+                features = features_list[i]
+                if features: # features が None でないことを確認する
+                    if pitch_in_range(features['key'], features['mode'], user_lowest_pitch, user_highest_pitch):
+                        recommended_tracks.append({
+                            'name': track['name'],
+                            'artist': track['artists'][0]['name'],
+                        })
+                else:
+                    print(f"Features is None for track: {track.get('name', 'Unknown')}")
 
-        offset += 30
-        if len(results['tracks']['items']) < 30:
-            break
+        except Exception as e:
+            print(f"Error during sp.search: {e}")
+            return [] # 検索エラー時に空のリストを返す
 
     return recommended_tracks
-
-# 推薦曲の取得と送信
-app = Flask(__name__)
-
-@app.route('/tracks', methods=['GET'])
-def get_tracks():
-    tracks = recommend_japanese_songs()
-    return jsonify(tracks)
+@app.route('/')
+def index():
+    songs = get_recommended_songs() # 曲リストを取得
+    return render_template('template.html', songs=songs) # テンプレートにデータを渡す
 
 if __name__ == '__main__':
     app.run(debug=True)

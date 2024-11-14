@@ -64,8 +64,3 @@ for i, song in enumerate(recommended_songs, 1):
     print(f"   キー: {song['key']}, モード: {'マイナー' if song['mode'] == 0 else 'メジャー'}")
     print(f"   ダンス性: {song['danceability']:.2f}")
     print()
-
-# 結果をCSVファイルに保存
-df = pd.DataFrame(recommended_songs)
-df.to_csv('recommended_japanese_songs.csv', index=False, encoding='utf-8-sig')
-print("推薦曲リストをrecommended_japanese_songs.csvに保存しました。")
