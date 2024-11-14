@@ -21,36 +21,48 @@ key_pitch_map = {
 }
 
 def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch):
+    print(f"Checking pitch_in_range for key: {track_key}, mode: {track_mode}")
     base_pitch = key_pitch_map[track_key]
     if track_mode == 0:  # マイナーキーの場合
         base_pitch *= 0.9
+    print(f"Base pitch: {base_pitch}")
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
-
-def get_recommended_songs(user_lowest_pitch, user_highest_pitch, limit=30):
+#ここで固定しないと曲が表示されない？
+def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30):
     recommended_tracks = []
     offset = 0
+    print("Entering get_recommended_songs")
 
     while len(recommended_tracks) < limit:
-        #日本市場100曲から30曲選ぶ
-        results = sp.search(q='year:2020-2023', type='track', limit=100, offset=offset, market='JP') # limitを大きくして検索効率アップ
+        try:
+            results = sp.search(q='year:2020-2023', type='track', limit=50, offset=offset, market='JP') # limit を 50 に減らす
+            if not results['tracks']['items']:  # 結果が空かどうかを確認する
+                print("tracks=NULL")
+                break  # 空の場合はループを抜ける
 
-        for track in results['tracks']['items']:
-            if len(recommended_tracks) >= limit:
-                break
-
-            track_id = track['id']
-            try: # API呼び出しエラーをtry-exceptで処理
-                features = sp.audio_features(track_id)[0]
-                if features and pitch_in_range(features['key'], features['mode'], user_lowest_pitch, user_highest_pitch):
-                    recommended_tracks.append({
-                        'name': track['name'],
-                        'artist': track['artists'][0]['name'],
-                    })
+            track_ids = [track['id'] for track in results['tracks']['items']]
+            try:
+                features_list = sp.audio_features(track_ids) # オーディオ機能の一括リクエスト
             except Exception as e:
-                print(f"Error getting audio features for track {track_id}: {e}")
+                print(f"Error getting audio features: {e}")
+                break # 無限ループを避けるためにエラー時にループを抜ける
 
-        offset += 100
-        if not results['tracks']['items']: # 検索結果が空ならループを抜ける
-            break
+            for i, track in enumerate(results['tracks']['items']):
+                if len(recommended_tracks) >= limit:
+                    break
+
+                features = features_list[i]
+                if features: # features が None でないことを確認する
+                    if pitch_in_range(features['key'], features['mode'], user_lowest_pitch, user_highest_pitch):
+                        recommended_tracks.append({
+                            'name': track['name'],
+                            'artist': track['artists'][0]['name'],
+                        })
+
+        except Exception as e:
+            print(f"Error during sp.search: {e}")
+            return [] # 検索エラー時に空のリストを返す
+
+        offset += 50
 
     return recommended_tracks
