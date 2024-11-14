@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>おすすめの曲</title>
+</head>
+<body>
+    <h1>おすすめの曲</h1>
+
+    {% if error %}  <!-- エラーメッセージがあれば表示 -->
+        <p style="color: red;">{{ error }}</p>
+    {% else %}
+        <ul>
+            {% for song in songs %}
+                <li>{{ song.name }} by {{ song.artist }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</body>
+</html>
