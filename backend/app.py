@@ -1,6 +1,8 @@
 from flask import Flask, render_template,jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO,emit
+from pydub import AudioSegment
+import numpy as np
 import os
 import io
 def get_recommended_songs(): raise ZeroDivisionError("ee")
@@ -40,23 +42,23 @@ def index():  # ルートパスをindex()に変更
         return "Error getting tracks", 500
 
 
-# WebSocket接続時
+@socketio.on('disconnect')
+def handle_disconnect():
+    print("Client disconnected")
+@socketio.on('message_from_client')
+def handle_message(data):
+    print("Received message:", data)
+    emit('message_from_server', {'response': 'Message received'}, broadcast=True)
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
     emit('message', {'data': 'Welcome to the WebSocket Audio server!'})
-
-# 音声データを受信
 @socketio.on('audio_data')
 def handle_audio_data(data):
     print(f"Received audio data, size: {len(data)} bytes")
-    
-    # 受信した音声データを処理する（ここでは保存しませんが、音声処理や保存を行うことができます）
-    audio_file = io.BytesIO(data)  # バイナリデータをファイルとして扱う
-    with open('received_audio.wav', 'wb') as f:
-        f.write(audio_file.read())
+    audio = AudioSegment.from_file(io.BytesIO(data), format="wav")
+    samples = np.array(audio.get_array_of_samples())  # 音声データをNumPy配列に変換
     emit('message', {'data': 'Audio received successfully!'})
-
 
 
 if __name__ == '__main__':
