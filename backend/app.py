@@ -1,13 +1,12 @@
 from flask import Flask, render_template,jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO,emit
-from pydub import AudioSegment
+#from pydub import AudioSegment
 from recommend_songs import get_recommended_songs
 import numpy as np
 import os
 import io
 
-def get_recommended_songs(): raise ZeroDivisionError("ee")
 app = Flask(__name__)
 CORS(app)  # すべてのオリジンからのアクセスを許可
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
@@ -16,20 +15,23 @@ socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
 def hello():
     return 'Hello, CORS!'
 
-@app.route('/api/recommendations', methods=['GET'])
-def get_recommendations():
+@app.route('/api/recommendations', methods=['GET'])  # recommend.pyと同じエンドポイント
+def get_tracks():
     try:
-        # `get_recommended_songs`を呼び出して曲データを取得
-        recommended_songs = get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30)
+        recommended_songs = get_recommended_songs() # recommend.pyの関数を呼び出す
+        songs_info = [
+            {
+                "name": song['name'],
+                "artist": song['artist'],
+            }
+            for song in recommended_songs
+        ]
+        return jsonify(songs_info)
 
-        # `ensure_ascii=False` を使用してUnicodeをエスケープしないようにする
-        return app.response_class(
-            response=jsonify(recommended_songs).data.decode("utf-8"),
-            content_type="application/json; charset=utf-8",
-        )
     except Exception as e:
-        return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
-
+        print(f"Error getting tracks: {e}")
+        return jsonify({"error": str(e)}), 500  # エラーメッセージを返す
+'''
 @socketio.on('disconnect')
 def handle_disconnect():
     print("Client disconnected")
@@ -50,6 +52,6 @@ def handle_audio_data(data):
     audio = AudioSegment.from_file(io.BytesIO(data), format="wav")
     samples = np.array(audio.get_array_of_samples())  # 音声データをNumPy配列に変換
     emit('message', {'data': 'Audio received successfully!'})
-
+'''
 if __name__ == '__main__':
     app.run(debug=True)
