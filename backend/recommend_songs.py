@@ -3,6 +3,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 from flask import Flask, jsonify
 from flask import Flask, render_template, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='../frontend')
 
@@ -65,15 +66,26 @@ def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=3
                 else:
                     print(f"Features is None for track: {track.get('name', 'Unknown')}")
 
+            offset += 50
+
         except Exception as e:
             print(f"Error during sp.search: {e}")
             return [] # 検索エラー時に空のリストを返す
 
     return recommended_tracks
-@app.route('/')
-def index():
-    songs = get_recommended_songs() # 曲リストを取得
-    return render_template('template.html', songs=songs) # テンプレートにデータを渡す
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/api/recommendations')
+def recommendations_api():
+    try:
+        songs = get_recommended_songs()
+        if not songs:
+            return jsonify({"error": "No songs found"}), 404
+        return jsonify(songs)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
