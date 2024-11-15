@@ -3,6 +3,9 @@ from flask_cors import CORS
 from flask_socketio import SocketIO,emit
 from pydub import AudioSegment
 import numpy as np
+import wave
+from zigoe import zigoe_async,topng_async,topitchpng_async,tosepartionpng_async
+import asyncio
 import os
 import io
 def get_recommended_songs(): raise ZeroDivisionError("ee")
@@ -56,9 +59,15 @@ def handle_connect():
 @socketio.on('audio_data')
 def handle_audio_data(data):
     print(f"Received audio data, size: {len(data)} bytes")
-    audio = AudioSegment.from_file(io.BytesIO(data), format="wav")
-    samples = np.array(audio.get_array_of_samples())  # 音声データをNumPy配列に変換
+    audio_ = AudioSegment.from_file(io.BytesIO(data))#
+    audio=np.array(audio_.get_array_of_samples())
     emit('message', {'data': 'Audio received successfully!'})
+    asyncio.run(topng_async(audio))
+    print("end1")
+    asyncio.run(tosepartionpng_async(audio))
+    print("end2")
+    asyncio.run(topitchpng_async(audio))
+    print("end3")
 
 
 if __name__ == '__main__':

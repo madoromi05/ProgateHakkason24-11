@@ -15,15 +15,12 @@ def extraction_stonemask(audio):# ピッチ推定の設定
 def extraction_harvest(audio):# ピッチ推定の設定
     
     import pyworld as pw
-    print("bb1")
     if audio.ndim == 2:
         audio=formatingnumpy(audio,yoko=True)
         audio = np.mean(audio, axis=0)
     audio = audio.astype(np.float64)
     audio = audio / np.max(np.abs(audio))
-    print("bb2")
     f0, t = pw.harvest(audio, FRAMERATE)
-    print("bb3")
     return f0
 def extraction_pyin(audio):
     import pyin

@@ -1,8 +1,9 @@
 from separation import separation_demucs
 from extraction import extraction_crepe,extraction_harvest,extraction_pyin,extraction_stonemask
 from antiecho import echoproces,dummyproces
-from pitch import *
+from pitch import min_max_pitch
 from func import loadwav,writerpng
+import numpy as np
 import sys,os
 import asyncio
 def to_async(func):
@@ -28,6 +29,17 @@ async def main(audio_data):
     return {"max":max_pitch,"min":min_pitch}
 
 
+async def topng(audio_data,file="output.png"):
+    writerpng(audio_data,file=file)
+async def tosepartionpng(audio_data,file="output.png"):
+    audio_data = await separation_demucs_async(audio_data)
+    writerpng(audio_data,file=file)
+    
+async def topitchpng(audio_data,file="output.png"):
+    audio_data = await separation_demucs_async(audio_data)
+    audio_data = await dummyproces_async(audio_data)
+    audio_data = await extraction_harvest_async(audio_data)
+    writerpng(audio_data,file=file)
 
 
 
