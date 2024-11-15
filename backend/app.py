@@ -2,64 +2,54 @@ from flask import Flask, render_template,jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO,emit
 from pydub import AudioSegment
+from recommend_songs import get_recommended_songs
 import numpy as np
 import os
 import io
+
 def get_recommended_songs(): raise ZeroDivisionError("ee")
-app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '../frontend'))
+app = Flask(__name__)
 CORS(app)  # すべてのオリジンからのアクセスを許可
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
+
 @app.route('/cors')
 def hello():
     return 'Hello, CORS!'
-#曲リストGET
-@app.route('/tracks', methods=['GET'])
-def get_tracks():
+
+@app.route('/api/recommendations', methods=['GET'])
+def get_recommendations():
     try:
-        print("recommended_not_coll")
-        recommended_songs = get_recommended_songs() # recommend_songs.pyの関数を呼び出す
-        songs_info = [
-            {
-                "name": song['name'],
-                "artist": song['artist'],
-            }
-            for song in recommended_songs
-        ]
+        # `get_recommended_songs`を呼び出して曲データを取得
+        recommended_songs = get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30)
 
-        return jsonify(songs_info)
-
+        # `ensure_ascii=False` を使用してUnicodeをエスケープしないようにする
+        return app.response_class(
+            response=jsonify(recommended_songs).data.decode("utf-8"),
+            content_type="application/json; charset=utf-8",
+        )
     except Exception as e:
-        print(f"Error getting tracks: {e}")
-        return jsonify({"error": "曲の取得に失敗しました。"}), 500
-
-@app.route('/')
-def index():  # ルートパスをindex()に変更
-    try:
-        recommended_songs = get_recommended_songs()
-        return render_template('../frontend/template.html', songs=recommended_songs) # template.htmlにsongs変数として渡す
-    except Exception as e:
-        print(f"Error getting tracks: {e}")
-        return "Error getting tracks", 500
-
+        return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
 
 @socketio.on('disconnect')
 def handle_disconnect():
     print("Client disconnected")
+
 @socketio.on('message_from_client')
 def handle_message(data):
     print("Received message:", data)
     emit('message_from_server', {'response': 'Message received'}, broadcast=True)
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
     emit('message', {'data': 'Welcome to the WebSocket Audio server!'})
+
 @socketio.on('audio_data')
 def handle_audio_data(data):
     print(f"Received audio data, size: {len(data)} bytes")
     audio = AudioSegment.from_file(io.BytesIO(data), format="wav")
     samples = np.array(audio.get_array_of_samples())  # 音声データをNumPy配列に変換
     emit('message', {'data': 'Audio received successfully!'})
-
 
 if __name__ == '__main__':
     app.run(debug=True)
