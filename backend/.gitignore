@@ -1,3 +1,6 @@
 myvenv
 zigoe/ffmpeg-master-latest-win64-gpl
 *.zip
+testvenv/
+*__pycache__/
+*.mp4
