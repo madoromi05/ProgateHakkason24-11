@@ -91,33 +91,33 @@ function Result() {
       </div>
 
       {currentQuiz && !quizFinished && (
-        <div className="Quiz">
-          <h2>歌詞クイズ</h2>
-          <p>{currentQuiz.lyrics}</p>
-          <ul>
-            {currentQuiz.options.map((option, index) => (
-              <li key={index}>
-                <button onClick={() => handleAnswerSelect(option)} disabled={selectedAnswer !== null}>
-                  {option}
-                </button>
-              </li>
-            ))}
-          </ul>
-          {selectedAnswer && (
-            <div>
-              <p>{isCorrect ? '正解です！' : '不正解です。正解は ' + currentQuiz.correctAnswer + ' でした。'}</p>
-              <button onClick={nextQuiz}>次の問題へ</button>
-            </div>
-          )}
-        </div>
-      )}
+  <div className="Quiz">
+    <h2>歌詞クイズ</h2>
+    <p>{currentQuiz.lyrics}</p>
+    <ul>
+      {currentQuiz.options.map((option, index) => (
+        <li key={index}>
+          <button onClick={() => handleAnswerSelect(option)} disabled={selectedAnswer !== null}>
+            {option}
+          </button>
+        </li>
+      ))}
+    </ul>
+    {selectedAnswer && (
+      <div>
+        <p>{isCorrect ? '正解です！' : '不正解です。正解は ' + currentQuiz.correctAnswer + ' でした。'}</p>
+        <button className="next-button" onClick={nextQuiz}>次の問題へ</button>
+      </div>
+    )}
+  </div>
+)}
 
-      {quizFinished && (
-        <div>
-          <p>全てのクイズが終了しました！</p>
-          <button onClick={resetQuiz}>もう一度挑戦</button>
-        </div>
-      )}
+{quizFinished && (
+  <div>
+    <p>全てのクイズが終了しました！</p>
+    <button className="reset-button" onClick={resetQuiz}>もう一度挑戦</button>
+  </div>
+)}
 
       <div className="button-container">
         <button className="bright-button" onClick={() => window.location.href='../index.html'}>
