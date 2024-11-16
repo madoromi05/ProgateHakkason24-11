@@ -305,3 +305,49 @@ body {
   flex: 1;
 }
 
+.recommendation-container {
+  display: block; /* フレックスからブロックに変更 */
+  text-align: left;
+  padding: 0 20px;
+}
+
+.song-list {
+  margin-bottom: 15px; /* 曲と曲の間にスペースを追加 */
+}
+
+.song-title {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+}
+
+.song-artist {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.issue-card {
+  padding: 15px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.issue-card:not(:last-child) {
+  border-bottom: 1px solid #ccc; /* 曲間の横棒 */
+}
+
+.issue-card:first-child {
+  border-top: 1px solid #ccc;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.issue-card:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
