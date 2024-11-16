@@ -33,26 +33,20 @@ def get_recommendations():
     except Exception as e:
         return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
 
+
+
 @socketio.on('disconnect')
-def handle_disconnect():
-    print("Client disconnected")
-
-@socketio.on('message_from_client')
-def handle_message(data):
-    print("Received message:", data)
-    emit('message_from_server', {'response': 'Message received'}, broadcast=True)
-
+def handle_disconnect():print("Client disconnected")
 @socketio.on('connect')
-def handle_connect():
-    print('Client connected')
-    emit('message', {'data': 'Welcome to the WebSocket Audio server!'})
+def handle_connect():print('Client connected')
+@socketio.on('connection')
+def handle_connect():print('Client connection')
 
 @socketio.on('audio_data')
 def handle_audio_data(data):
     print(f"Received audio data, size: {len(data)} bytes")
     audio_ = AudioSegment.from_file(io.BytesIO(data))
     audio=np.array(audio_.get_array_of_samples())
-    emit('message', {'data': 'Audio received successfully!'})
     d=asyncio.run(zigoe_async(audio))
     print(d)
 

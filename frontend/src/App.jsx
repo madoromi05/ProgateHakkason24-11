@@ -4,29 +4,17 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import rokuonnImage from './assets/rokuonn.png';
 import './App.css';
+import { io } from 'socket.io-client';
 
 function App() {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
-  const socketRef = useRef(null);
  
-  useEffect(() => {
-    // WebSocketの接続
-    socketRef.current = new WebSocket('ws://your-backend-url'); // バックエンドのURLに置き換えてください
-
-    socketRef.current.onopen = () => {
-      console.log('WebSocket connection established');
-    };
-
-    socketRef.current.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-
-    return () => {
-      // クリーンアップ
-      socketRef.current.close();
-    };
-  }, []);
+  
+  const socket = io('http://localhost:' + 5000);
+  socket.on("connection", (socket) => {console.log(socket.id)});
+  socket.on("connect", () => {console.log(socket.id)});
+  socket.on("disconnect", () => {console.log(socket.id)});
 
   const handleRecordingClick = async () => {
     if (isRecording) {
@@ -34,20 +22,27 @@ function App() {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     } else {
-      // 録音開始
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
 
       mediaRecorderRef.current.ondataavailable = (event) => {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-          // 音声データを送信
-          socketRef.current.send(event.data);
+        if (event.data.size > 0) {
+          console.log(event.data.length)
+          sendAudioData(event.data);
         }
       };
-
       mediaRecorderRef.current.start();
       setIsRecording(true);
     }
+  };
+  const sendAudioData = (audioBlob) => {
+    // BlobをArrayBufferに変換して送信
+    const reader = new FileReader();
+    reader.onload = () => {
+      const arrayBuffer = reader.result;
+      socket.emit('audio_data', arrayBuffer); // サーバーに音声データを送信
+    };
+    reader.readAsArrayBuffer(audioBlob);
   };
 
   return (
