@@ -109,9 +109,12 @@ function Result() {
       <div className="recommendation-container">
         {filteredSongs.map((song, index) => (
           <div key={index} className="issue-card">
-            <div>
-              <p className="song-title">{song.name}</p>
-              <p className="song-artist">#{song.artist}</p>
+            <div className="song-info">
+              <span className="status-icon"></span> {/* アイコンを追加 */}
+              <div className="text-info">  
+                <p className="song-title">{song.name}</p>
+                <p className="song-artist">#{song.artist}</p>
+              </div>
             </div>
           </div>
         ))}

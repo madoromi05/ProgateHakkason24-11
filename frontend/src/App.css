@@ -351,3 +351,45 @@ body {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
+.song-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.status-icon {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #2ea44f; /* 緑色の円 */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.status-icon::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background-color: #2ea44f; /* 中心の緑色の点 */
+  border-radius: 50%;
+}
+
+.text-info {
+  display: flex;
+  flex-direction: column; /* タイトルとアーティスト名を縦に並べる */
+}
+
+.song-title {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+}
+
+.song-artist {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
