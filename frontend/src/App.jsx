@@ -15,6 +15,9 @@ function App() {
   socket.on("connection", (socket) => {console.log(socket.id)});
   socket.on("connect", () => {console.log(socket.id)});
   socket.on("disconnect", () => {console.log(socket.id)});
+  socket.on("error",()=>{
+    //ここにバック側で処理が失敗したときの動作を書いてほしい
+  })
 
   const handleRecordingClick = async () => {
     if (isRecording) {

@@ -44,10 +44,13 @@ def handle_connect():print('Client connection')
 
 @socketio.on('audio_data')
 def handle_audio_data(data):
-    print(f"Received audio data, size: {len(data)} bytes")
-    audio_ = AudioSegment.from_file(io.BytesIO(data))
-    audio=np.array(audio_.get_array_of_samples())
-    d=asyncio.run(zigoe_async(audio))
+    try:
+        print(f"Received audio data, size: {len(data)} bytes")
+        audio_ = AudioSegment.from_file(io.BytesIO(data))
+        audio=np.array(audio_.get_array_of_samples())
+        d=asyncio.run(zigoe_async(audio))
+    except Exception as e:
+        return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
     print(d)
 
 if __name__ == '__main__':
