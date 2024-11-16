@@ -29,12 +29,7 @@ def get_tracks():
         return jsonify(songs_info)
 
     except Exception as e:
-<<<<<<< HEAD
         return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
-=======
-        print(f"Error getting tracks: {e}")
-        return jsonify({"error": str(e)}), 500  # エラーメッセージを返す
->>>>>>> 435c3d59cdd6f9124630644a0f848c2b2e08994d
 '''
 @socketio.on('disconnect')
 def handle_disconnect():
