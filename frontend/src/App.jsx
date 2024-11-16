@@ -3,6 +3,7 @@ import axios from 'axios';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import rokuonnImage from './assets/rokuonn.png';
+import { io } from 'socket.io-client';
 import './App.css';
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
  
   useEffect(() => {
     // WebSocketの接続
-    socketRef.current = new WebSocket('ws://your-backend-url'); // バックエンドのURLに置き換えてください
+    socketRef.current = io('http://localhost:5000');
 
     socketRef.current.onopen = () => {
       console.log('WebSocket connection established');
@@ -24,7 +25,7 @@ function App() {
 
     return () => {
       // クリーンアップ
-      socketRef.current.close();
+      socketRef.current.disconnect();
     };
   }, []);
 
@@ -39,9 +40,9 @@ function App() {
       mediaRecorderRef.current = new MediaRecorder(stream);
 
       mediaRecorderRef.current.ondataavailable = (event) => {
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+        if (socketRef.current && socketRef.current.connected) {
           // 音声データを送信
-          socketRef.current.send(event.data);
+          socketRef.current.emit('audio_data', event.data);
         }
       };
 

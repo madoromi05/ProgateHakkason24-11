@@ -9,7 +9,7 @@ import io
 
 app = Flask(__name__)
 CORS(app)  # すべてのオリジンからのアクセスを許可
-socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/cors')
 def hello():
@@ -53,4 +53,4 @@ def handle_audio_data(data):
     emit('message', {'data': 'Audio received successfully!'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
