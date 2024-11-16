@@ -1,5 +1,6 @@
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyClientCredentials
+from zigoe.func import writerwav
 
 # Spotify API認証
 client_id = '20e9a4be685749e2bf74fa422a90ee77'
@@ -20,7 +21,17 @@ def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch)
         if user_highest_pitch < 200:
             return base_pitch >= user_lowest_pitch
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
-
+def get_recommended_songs_pitch_to_json(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
+    to_json_data={}
+    print("start")
+    results = sp.search(q='year:2020-2023', type='track', limit=50, offset=50, market='JP')
+    if not results['tracks']['items']:
+        return 
+    for track in results['tracks']['items']:
+        print(track['name'])
+        audio=sp.audio_analysis(track['id'])
+        writerwav(audio,file=f"{track['name']}.wav")
+            
 def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
     recommended_tracks = []
     offset = 0
@@ -31,10 +42,8 @@ def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch
         results = sp.search(q='year:2020-2023', type='track', limit=50, offset=offset, market='JP')
         if not results['tracks']['items']:
             break
-
         track_ids = [track['id'] for track in results['tracks']['items']]
         features_list = sp.audio_features(track_ids)
-        print("s")
         for i, track in enumerate(results['tracks']['items']):
             if len(recommended_tracks) >= limit:
                 break
@@ -50,4 +59,4 @@ def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch
 
     return recommended_tracks
 if __name__=="__main__":
-    get_recommended_songs()
+    get_recommended_songs_pitch_to_json()

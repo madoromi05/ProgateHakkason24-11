@@ -18,7 +18,15 @@ def dummyproces_async(audio_data):return dummyproces(audio_data)
 def extraction_harvest_async(audio_data):return extraction_harvest(audio_data)
 @to_async
 def min_max_pitch_async(audio_data):return min_max_pitch(audio_data)
-
+async def path(path):
+    audio_data=loadwav(path)
+    audio_data = await separation_demucs_async(audio_data)
+    audio_data = await dummyproces_async(audio_data)
+    audio_data = await extraction_harvest_async(audio_data)
+    audio_data = await min_max_pitch_async(audio_data)
+    max_pitch = np.max(audio_data)
+    min_pitch = np.min(audio_data)
+    return {"max":max_pitch,"min":min_pitch}
 async def main(audio_data):
     audio_data = await separation_demucs_async(audio_data)
     audio_data = await dummyproces_async(audio_data)

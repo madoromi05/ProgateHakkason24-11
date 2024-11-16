@@ -2,11 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from func import writerwav,loadwav,formatingnumpy
 
+
+from demucs import pretrained
+from demucs.apply import apply_model
+import torch
+model = pretrained.get_model("htdemucs")
 def separation_demucs(audio):
     #インポート
-    from demucs import pretrained
-    from demucs.apply import apply_model
-    import torch
     #データ整形
     if audio.ndim==2:
         audio=formatingnumpy(audio,yoko=True)
@@ -18,7 +20,6 @@ def separation_demucs(audio):
     audio = audio / np.max(np.abs(audio))
     audio_tensor = torch.tensor(audio)
     #モデル生成
-    model = pretrained.get_model("htdemucs")
     #実際に分離
     sources = apply_model(model, audio_tensor, device="cpu")
     vocals = sources[0, 3]
