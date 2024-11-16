@@ -78,13 +78,14 @@ function Result() {
   return (
     <div className="Result">
       <h1>あなたにオススメの曲は!!</h1>
-      <ul>
+      <div className="recommendation-container">
         {songs.map((song, index) => (
-          <li key={index}>
-            {song.name} - {song.artist}
-          </li>
+          <div key={index} className="song-card">
+            <h3>{song.name}</h3>
+            <p>{song.artist}</p>
+          </div>
         ))}
-      </ul>
+      </div>
 
       <div className="Score">
         <h2>クイズ合計点: {score}</h2>
