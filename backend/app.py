@@ -59,15 +59,11 @@ def handle_connect():
 @socketio.on('audio_data')
 def handle_audio_data(data):
     print(f"Received audio data, size: {len(data)} bytes")
-    audio_ = AudioSegment.from_file(io.BytesIO(data))#
+    audio_ = AudioSegment.from_file(io.BytesIO(data))
     audio=np.array(audio_.get_array_of_samples())
     emit('message', {'data': 'Audio received successfully!'})
-    asyncio.run(topng_async(audio))
-    print("end1")
-    asyncio.run(tosepartionpng_async(audio))
-    print("end2")
-    asyncio.run(topitchpng_async(audio))
-    print("end3")
+    d=asyncio.run(zigoe_async(audio))
+    print(d)
 
 
 if __name__ == '__main__':

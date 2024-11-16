@@ -1,13 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from func import writerwav,loadwav,formatingnumpy
-"""
-このファイル内では関数の引数と返り値にモノラルのnumpy音声データ
-"""
+
 def separation_demucs(audio):
+    #インポート
     from demucs import pretrained
     from demucs.apply import apply_model
     import torch
+    #データ整形
     if audio.ndim==2:
         audio=formatingnumpy(audio,yoko=True)
         audio_data = np.expand_dims(audio, axis=0) 
@@ -17,18 +17,13 @@ def separation_demucs(audio):
     audio = audio_data.astype(np.float32)
     audio = audio / np.max(np.abs(audio))
     audio_tensor = torch.tensor(audio)
+    #モデル生成
     model = pretrained.get_model("htdemucs")
-
-
+    #実際に分離
     sources = apply_model(model, audio_tensor, device="cpu")
-
-
-    drums = sources[0, 0]
-    bass = sources[0, 1]
-    other = sources[0, 2]
     vocals = sources[0, 3]
-
     return vocals.numpy()
+
 if __name__=="__main__":
     import librosa
     import sys,os

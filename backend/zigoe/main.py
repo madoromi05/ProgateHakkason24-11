@@ -41,9 +41,6 @@ async def topitchpng(audio_data,file="output.png"):
     audio_data = await extraction_harvest_async(audio_data)
     writerpng(audio_data,file=file)
 
-
-
-
 if __name__=="__main__":
     import sys,os
     if len(sys.argv)<=1:
