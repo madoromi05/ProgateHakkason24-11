@@ -17,13 +17,17 @@ def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch)
     base_pitch = key_pitch_map[track_key]
     if track_mode == 0:  # マイナーキーの場合
         base_pitch *= 0.9
+        if user_highest_pitch < 200:
+            return base_pitch >= user_lowest_pitch
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
-def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30):
+def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
     recommended_tracks = []
     offset = 0
-
-    while len(recommended_tracks) < limit:
+    max_try=100
+    n=0
+    if(user_highest_pitch<key_pitch_map[0] or user_lowest_pitch>key_pitch_map[11]):return []
+    while len(recommended_tracks) < limit and n<max_try:
         results = sp.search(q='year:2020-2023', type='track', limit=50, offset=offset, market='JP')
         if not results['tracks']['items']:
             break
@@ -41,7 +45,7 @@ def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=3
                     'name': track['name'],
                     'artist': track['artists'][0]['name'],
                 })
-
-        offset += 50
+        n+=1
+        offset += 100
 
     return recommended_tracks

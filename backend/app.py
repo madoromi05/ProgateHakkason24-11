@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from recommend_songs import get_recommended_songs
 import numpy as np
 import wave
-from zigoe import zigoe_async,topng_async,topitchpng_async,tosepartionpng_async
+from zigoe import zigoe_async,topng_async,topitchpng_async,tosepartionpng_async,testdata_async
 import asyncio
 import os
 import io
@@ -23,10 +23,15 @@ def hello():
 def get_recommendations():
     try:
         id = request.remote_addr
-        return app.response_class(
-            response=jsonify(datadict[id]).data.decode("utf-8"),
-            content_type="application/json; charset=utf-8",
-        )
+        if datadict[id]=="null":
+            return jsonify({"erro":"mada"})
+        if len(datadict[id])==0:
+            return jsonify({"erro":"null"})
+        else:
+            return app.response_class(
+                response=jsonify(datadict[id]).data.decode("utf-8"),
+                content_type="application/json; charset=utf-8",
+            )
     except Exception as e:
         print(f"Failed to get recommendations: {e}")
         return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
@@ -45,11 +50,16 @@ def handle_connect():print('Clien connection')
 def handle_audio_data(data):
     try:
         id = request.remote_addr
+        datadict[id]="null"
         print(datadict)
         print(f"Received audio data, size: {len(data)} bytes")
-        audio_ = AudioSegment.from_file(io.BytesIO(data))
-        audio=np.array(audio_.get_array_of_samples())
-        pitch=asyncio.run(zigoe_async(audio))
+        if False:
+            audio_ = AudioSegment.from_file(io.BytesIO(data))
+            audio=np.array(audio_.get_array_of_samples())
+            pitch=asyncio.run(zigoe_async(audio))
+            asyncio.run(topitchpng_async(audio))
+        else:
+            pitch=asyncio.run(testdata_async())
         datadict[id] = get_recommended_songs(user_lowest_pitch=pitch["min"], user_highest_pitch=pitch["max"], limit=30)
         print(pitch)
     except Exception as e:

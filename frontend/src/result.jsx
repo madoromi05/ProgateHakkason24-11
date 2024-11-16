@@ -12,7 +12,20 @@ function Result() { // Resultコンポーネントを定義
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setSongs(data);
+        console.log(data)
+        if(Object.keys(data).length === 1){
+          if(data.error=="null"){
+            setSongs([{ name: 'お前に合う曲はない', artist: '去れ' }]);
+          }
+          if(data.error=="mada"){
+            setSongs([{ name: 'お前に合う曲はまだだ', artist: '去れ' }]);
+          }
+          
+        }
+        else{
+          setSongs(data);
+
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }

@@ -41,6 +41,16 @@ async def topitchpng(audio_data,file="output.png"):
     audio_data = await extraction_harvest_async(audio_data)
     writerpng(audio_data,file=file)
 
+async def test():
+    import random 
+    path=random.choice([
+        r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.876488.wav",
+        r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.707662.wav",
+        r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.518347.wav",])
+    data=loadwav(file=path)
+    return await main(data)
+
+
 if __name__=="__main__":
     import sys,os
     if len(sys.argv)<=1:
