@@ -18,7 +18,6 @@ const quizData = [
     options: ["シャルル", "ダーリン", "雨とペトラ", "ノマド"],
     correctAnswer: "雨とペトラ"
   },
-  // 必要に応じて他のクイズ問題を追加
 ];
 
 function Result() {
@@ -29,7 +28,9 @@ function Result() {
   const [score, setScore] = useState(0);
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
+  // データの取得とクイズの初期化
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,6 +48,18 @@ function Result() {
     fetchData();
     setCurrentQuiz(quizData[quizIndex]);
   }, [quizIndex]);
+
+  // 曲名・作曲者の検索処理
+  const handleSearch = () => {
+    setSearchQuery('');
+    window.location.href = '../index.html'; // 「もう一度計測する」と同じ動作に変更
+  };
+
+  // 曲名や作曲者のフィルタリング
+  const filteredSongs = songs.filter((song) =>
+    song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    song.artist.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
@@ -78,8 +91,23 @@ function Result() {
   return (
     <div className="Result">
       <h1>あなたにオススメの曲は!!</h1>
+
+      {/* Atist or Title */}
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-bar"
+          placeholder="Atist or Title"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="search-button" onClick={handleSearch}>
+        One more measurement
+        </button>
+      </div>
+
       <div className="recommendation-container">
-        {songs.map((song, index) => (
+        {filteredSongs.map((song, index) => (
           <div key={index} className="song-card">
             <h3>{song.name}</h3>
             <p>{song.artist}</p>
@@ -119,12 +147,6 @@ function Result() {
           )}
         </div>
       )}
-
-      <div className="button-container">
-        <button className="bright-button" onClick={() => window.location.href='../index.html'}>
-          もう一度計測する
-        </button>
-      </div>
     </div>
   );
 }
