@@ -305,14 +305,60 @@ body {
   flex: 1;
 }
 
+/* コンテナとリストのスタイル */
 .recommendation-container {
-  display: block; /* フレックスからブロックに変更 */
-  text-align: left;
-  padding: 0 20px;
+  display: block;
+  padding: 20px;
 }
 
-.song-list {
-  margin-bottom: 15px; /* 曲と曲の間にスペースを追加 */
+/* 曲情報のレイアウト */
+.song-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* チェックボックスのスタイル */
+.song-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* 緑色アイコン */
+.status-icon {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #2ea44f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.status-icon::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background-color: #2ea44f;
+  border-radius: 50%;
+}
+
+/* 白色アイコン */
+.white-icon {
+  border: 2px solid #ccc;
+}
+
+.white-icon::before {
+  background-color: #ccc;
+}
+
+/* テキスト情報のスタイル */
+.text-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .song-title {
@@ -328,74 +374,19 @@ body {
 }
 
 .issue-card {
-  padding: 15px;
-  background-color: #f9f9f9;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.issue-card:not(:last-child) {
-  border-bottom: 1px solid #ccc; /* 曲間の横棒 */
+/* Sort ドロップダウンメニューのスタイル */
+.sort-container {
+  margin-left: auto;
 }
 
-.issue-card:first-child {
-  border-top: 1px solid #ccc;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.issue-card:last-child {
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.song-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.song-checkbox {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.status-icon {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #2ea44f; /* 緑色の円 */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.status-icon::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  background-color: #2ea44f; /* 中心の緑色の点 */
-  border-radius: 50%;
-}
-
-.text-info {
-  display: flex;
-  flex-direction: column; /* タイトルとアーティスト名を縦に並べる */
-}
-
-.song-title {
-  font-size: 18px;
-  color: #333;
-  margin: 0;
-}
-
-.song-artist {
+.sort-dropdown {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
   font-size: 14px;
-  color: #666;
-  margin: 0;
+  cursor: pointer;
 }

@@ -6,17 +6,17 @@ const quizData = [
   {
     lyrics: "簡単:青に似たすっぱい春とライラック君を待つよここでね",
     options: ["ライラック", "青と夏", "ケセラセラ", "コロンブス"],
-    correctAnswer: "ライラック"
+    correctAnswer: "ライラック",
   },
   {
     lyrics: "超難問:Выходила на берег Катюша,На высокий берег на крутой.",
     options: ["Варяг", "Армия моя", "Катюша", "Кукушка"],
-    correctAnswer: "Катюша"
+    correctAnswer: "Катюша",
   },
   {
     lyrics: "難問:誰かが言った　いつか溜息は夜に化けて歌を歌う",
     options: ["シャルル", "ダーリン", "雨とペトラ", "ノマド"],
-    correctAnswer: "雨とペトラ"
+    correctAnswer: "雨とペトラ",
   },
 ];
 
@@ -29,8 +29,8 @@ function Result() {
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState('None');
 
-  // データの取得とクイズの初期化
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,16 +49,26 @@ function Result() {
     setCurrentQuiz(quizData[quizIndex]);
   }, [quizIndex]);
 
-  // 曲名・作曲者の検索処理
   const handleSearch = () => {
     setSearchQuery('');
-    window.location.href = '../index.html'; // 「もう一度計測する」と同じ動作に変更
+    window.location.href = '../index.html';
   };
 
-  // 曲名や作曲者のフィルタリング
-  const filteredSongs = songs.filter((song) =>
-    song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    song.artist.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleSortChange = (option) => {
+    setSortOption(option);
+    let sortedSongs = [...songs];
+    if (option === 'Artist') {
+      sortedSongs.sort((a, b) => a.artist.localeCompare(b.artist, 'ja'));
+    } else if (option === 'Title') {
+      sortedSongs.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+    }
+    setSongs(option === 'None' ? songs : sortedSongs);
+  };
+
+  const filteredSongs = songs.filter(
+    (song) =>
+      song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artist.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleAnswerSelect = (answer) => {
@@ -66,13 +76,13 @@ function Result() {
     const correct = answer === currentQuiz.correctAnswer;
     setIsCorrect(correct);
     if (correct) {
-      setScore(prevScore => prevScore + 1);
+      setScore((prevScore) => prevScore + 1);
     }
   };
 
   const nextQuiz = () => {
     if (quizIndex < quizData.length - 1) {
-      setQuizIndex(prevIndex => prevIndex + 1);
+      setQuizIndex((prevIndex) => prevIndex + 1);
       setSelectedAnswer(null);
       setIsCorrect(null);
     } else {
@@ -92,7 +102,6 @@ function Result() {
     <div className="Result">
       <h1>あなたにオススメの曲は!!</h1>
 
-      {/* Atist or Title */}
       <div className="search-container">
         <input
           type="text"
@@ -102,17 +111,43 @@ function Result() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button className="search-button" onClick={handleSearch}>
-        One more measurement
+          One more measurement
         </button>
       </div>
 
       <div className="recommendation-container">
+        {/* 空白のヘッダー行 */}
+        <div className="issue-card">
+          <div className="song-info">
+            <input type="checkbox" className="song-checkbox" />
+            <span className="status-icon white-icon"></span>
+
+            {/* Sort by ドロップダウンメニューを同じ横列に配置 */}
+            <div className="sort-container">
+              <select
+                className="sort-dropdown"
+                value={sortOption}
+                onChange={(e) => handleSortChange(e.target.value)}
+              >
+                <option value="None">None</option>
+                <option value="Artist">Artist</option>
+                <option value="Title">Title</option>
+              </select>
+            </div>
+
+            <div className="text-info">
+              <p className="song-title"></p>
+              <p className="song-artist"></p>
+            </div>
+          </div>
+        </div>
+
         {filteredSongs.map((song, index) => (
           <div key={index} className="issue-card">
             <div className="song-info">
-              <input type="checkbox" className="song-checkbox" /> {/* チェックボックスを追加 */}
-              <span className="status-icon"></span> {/* アイコンを追加 */}
-              <div className="text-info">  
+              <input type="checkbox" className="song-checkbox" />
+              <span className="status-icon"></span>
+              <div className="text-info">
                 <p className="song-title">{song.name}</p>
                 <p className="song-artist">#{song.artist}</p>
               </div>
