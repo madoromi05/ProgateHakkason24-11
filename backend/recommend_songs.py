@@ -17,6 +17,13 @@ def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch)
     base_pitch = key_pitch_map[track_key]
     if track_mode == 0:  # マイナーキーの場合
         base_pitch *= 0.9
+
+    narrow_lowest = max(user_lowest_pitch, (user_lowest_pitch + user_highest_pitch) / 2 - 10)  # 中心 -10Hz
+    narrow_highest = min(user_highest_pitch, (user_lowest_pitch + user_highest_pitch) / 2 + 10)  # 中心 +10Hz
+
+    # 入れ違いを防止する（narrow_lowest <= narrow_highest の条件を保証）
+    if narrow_lowest > narrow_highest:
+        narrow_lowest, narrow_highest = narrow_highest, narrow_lowest
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 
 def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30):
