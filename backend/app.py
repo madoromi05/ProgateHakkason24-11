@@ -15,19 +15,26 @@ socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
 def hello():
     return 'Hello, CORS!'
 
-@app.route('/api/recommendations', methods=['GET'])
-def get_recommendations():
+@app.route('/api/recommendations', methods=['GET'])  # recommend.pyと同じエンドポイント
+def get_tracks():
     try:
-        # `get_recommended_songs`を呼び出して曲データを取得
-        recommended_songs = get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=30)
+        recommended_songs = get_recommended_songs() # recommend.pyの関数を呼び出す
+        songs_info = [
+            {
+                "name": song['name'],
+                "artist": song['artist'],
+            }
+            for song in recommended_songs
+        ]
+        return jsonify(songs_info)
 
-        # `ensure_ascii=False` を使用してUnicodeをエスケープしないようにする
-        return app.response_class(
-            response=jsonify(recommended_songs).data.decode("utf-8"),
-            content_type="application/json; charset=utf-8",
-        )
     except Exception as e:
+<<<<<<< HEAD
         return jsonify({"error": f"Failed to get recommendations: {e}"}), 500
+=======
+        print(f"Error getting tracks: {e}")
+        return jsonify({"error": str(e)}), 500  # エラーメッセージを返す
+>>>>>>> 435c3d59cdd6f9124630644a0f848c2b2e08994d
 '''
 @socketio.on('disconnect')
 def handle_disconnect():
