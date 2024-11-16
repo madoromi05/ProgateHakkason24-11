@@ -101,6 +101,3 @@ if __name__ == "__main__":
     with open(jsonpath, 'r',encoding="utf-8") as file:
         json_data = json.load(file)
     asyncio.run(main())
-    with open(jsonpath, 'w',encoding="utf-8") as file:
-        json.dump(json_data, file, indent=4, ensure_ascii=False)  # indent=4で見やすいフォーマットに
-        print("完了")

@@ -1,6 +1,8 @@
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyClientCredentials
 from zigoe.func import writerwav
+import json
+import random
 
 # Spotify API認証
 client_id = '20e9a4be685749e2bf74fa422a90ee77'
@@ -22,15 +24,13 @@ def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch)
             return base_pitch >= user_lowest_pitch
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
 def get_recommended_songs_pitch_to_json(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
-    to_json_data={}
-    print("start")
-    results = sp.search(q='year:2020-2023', type='track', limit=50, offset=50, market='JP')
-    if not results['tracks']['items']:
-        return 
-    for track in results['tracks']['items']:
-        print(track['name'])
-        audio=sp.audio_analysis(track['id'])
-        writerwav(audio,file=f"{track['name']}.wav")
+    with open("kyok.json", 'r',encoding="utf-8") as file:
+        json_data:dict= json.load(file)
+    lis=[v["name"] for v in json_data.values if user_lowest_pitch<=v["min"] and user_highest_pitch<v["max"]]
+    if len(lis)>10:
+        return random.sample(lis,10)
+    else:
+        return lis
             
 def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
     recommended_tracks = []
