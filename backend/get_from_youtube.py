@@ -80,6 +80,8 @@ def run_async_task(item):
     loop = asyncio.get_event_loop()
     data=loop.run_until_complete(path_async(item[0]))
     print("音声処理終了",*item)
+    with open("output.txt","a",encoding="utf-8") as f:
+        f.write(f'name:{item[1]},min:{data["min"]},max:{data["max"]}\n')
     return {"name":item[1],"min":data["min"],"max":data["max"]}
 # メイン処理
 async def main():
@@ -92,14 +94,13 @@ async def main():
         tasks = [wrapper(video_id,title) for video_id, title in video_list]
         await asyncio.gather(*tasks)
     with multiprocessing.Pool() as pool:
-        reslut=pool.map(run_async_task,[(os.path.abspath(f"audio{video_id}.wav"),title) for video_id, title in video_list])
-    for data,video  in zip(reslut,video_list):
-        json_data[video[0]]=data
+        pool.map(run_async_task,[(os.path.abspath(f"audio{video_id}.wav"),title) for video_id, title in video_list])
+
 if __name__ == "__main__":
     jsonpath="kyok.json"
-    with open(jsonpath, 'r',encoding="shift_jis") as file:
+    with open(jsonpath, 'r',encoding="utf-8") as file:
         json_data = json.load(file)
     asyncio.run(main())
-    with open(jsonpath, 'w',encoding="shift_jis") as file:
+    with open(jsonpath, 'w',encoding="utf-8") as file:
         json.dump(json_data, file, indent=4, ensure_ascii=False)  # indent=4で見やすいフォーマットに
         print("完了")
