@@ -5,7 +5,7 @@ import viteLogo from '/vite.svg';
 import rokuonnImage from './assets/rokuonn.png';
 import './App.css';
 import { io } from 'socket.io-client';
-function App({ func }) {
+function App() {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
  
@@ -38,7 +38,6 @@ function App({ func }) {
     const reader = new FileReader();
     reader.onload = () => {
       const arrayBuffer = reader.result;
-      console.log(arrayBuffer)
       socket.emit('audio_data', arrayBuffer); // サーバーに音声データを送信
     };
     reader.readAsArrayBuffer(audioBlob);
