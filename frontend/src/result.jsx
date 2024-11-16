@@ -1,49 +1,96 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// クイズデータを直接コンポーネント内で定義
+// クイズデータを定義
 const quizData = [
   {
-    lyrics: "青に似たすっぱい春とライラック君を待つよここでね",
+    lyrics: "簡単:青に似たすっぱい春とライラック君を待つよここでね",
     options: ["ライラック", "青と夏", "ケセラセラ", "コロンブス"],
     correctAnswer: "ライラック"
   },
   {
-    lyrics: "ねえ　今でも覚えてる？あの日の空の色",
-    options: ["青と夏", "ハルノヒ", "シーソーゲーム", "夏色"],
-    correctAnswer: "青と夏"
+    lyrics: "超難問:Выходила на берег Катюша,На высокий берег на крутой.",
+    options: ["Варяг", "Армия моя", "Катюша", "Кукушка"],
+    correctAnswer: "Катюша"
+  },
+  {
+    lyrics: "難問:誰かが言った　いつか溜息は夜に化けて歌を歌う",
+    options: ["シャルル", "ダーリン", "雨とペトラ", "ノマド"],
+    correctAnswer: "雨とペトラ"
   },
   // 必要に応じて他のクイズ問題を追加
 ];
 
 function Result() {
+  const [songs, setSongs] = useState([]);
   const [currentQuiz, setCurrentQuiz] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [score, setScore] = useState(0);
+  const [quizIndex, setQuizIndex] = useState(0);
+  const [quizFinished, setQuizFinished] = useState(false);
 
   useEffect(() => {
-    // ランダムにクイズを選択
-    const randomQuiz = quizData[Math.floor(Math.random() * quizData.length)];
-    setCurrentQuiz(randomQuiz);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/recommendations');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setSongs(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+    setCurrentQuiz(quizData[quizIndex]);
+  }, [quizIndex]);
 
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
-    setIsCorrect(answer === currentQuiz.correctAnswer);
+    const correct = answer === currentQuiz.correctAnswer;
+    setIsCorrect(correct);
+    if (correct) {
+      setScore(prevScore => prevScore + 1);
+    }
+  };
+
+  const nextQuiz = () => {
+    if (quizIndex < quizData.length - 1) {
+      setQuizIndex(prevIndex => prevIndex + 1);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
+    } else {
+      setQuizFinished(true);
+    }
+  };
+
+  const resetQuiz = () => {
+    setQuizIndex(0);
+    setScore(0);
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    setQuizFinished(false);
   };
 
   return (
     <div className="Result">
       <h1>あなたにオススメの曲は!!</h1>
-      {/* 推奨曲のリストはここに後で追加されます */}
-      
-      <div className="button-container">
-        <button className="bright-button" onClick={() => window.location.href='../index.html'}>
-          もう一度計測する
-        </button>
+      <ul>
+        {songs.map((song, index) => (
+          <li key={index}>
+            {song.name} - {song.artist}
+          </li>
+        ))}
+      </ul>
+
+      <div className="Score">
+        <h2>クイズ合計点: {score}</h2>
       </div>
-      
-      {currentQuiz && (
+
+      {currentQuiz && !quizFinished && (
         <div className="Quiz">
           <h2>歌詞クイズ</h2>
           <p>{currentQuiz.lyrics}</p>
@@ -57,10 +104,26 @@ function Result() {
             ))}
           </ul>
           {selectedAnswer && (
-            <p>{isCorrect ? '正解です！' : '不正解です。正解は ' + currentQuiz.correctAnswer + ' でした。'}</p>
+            <div>
+              <p>{isCorrect ? '正解です！' : '不正解です。正解は ' + currentQuiz.correctAnswer + ' でした。'}</p>
+              <button onClick={nextQuiz}>次の問題へ</button>
+            </div>
           )}
         </div>
       )}
+
+      {quizFinished && (
+        <div>
+          <p>全てのクイズが終了しました！</p>
+          <button onClick={resetQuiz}>もう一度挑戦</button>
+        </div>
+      )}
+
+      <div className="button-container">
+        <button className="bright-button" onClick={() => window.location.href='../index.html'}>
+          もう一度計測する
+        </button>
+      </div>
     </div>
   );
 }
