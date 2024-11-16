@@ -354,8 +354,14 @@ body {
 
 .song-info {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
+}
+
+.song-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .status-icon {

@@ -110,6 +110,7 @@ function Result() {
         {filteredSongs.map((song, index) => (
           <div key={index} className="issue-card">
             <div className="song-info">
+              <input type="checkbox" className="song-checkbox" /> {/* チェックボックスを追加 */}
               <span className="status-icon"></span> {/* アイコンを追加 */}
               <div className="text-info">  
                 <p className="song-title">{song.name}</p>
