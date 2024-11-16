@@ -47,7 +47,7 @@ h1{
   align-items: center;
   color: #000000;
   height: 35vh; /* 画面全体の高さ */
-  font-size: 7em; /* 見出しの文字サイズ */
+  font-size: 6em; /* 見出しの文字サイズ */
   text-align: center;
 }
 
