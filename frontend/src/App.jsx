@@ -1,24 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, createContext } from 'react';
 import axios from 'axios';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import rokuonnImage from './assets/rokuonn.png';
 import './App.css';
 import { io } from 'socket.io-client';
-
-function App() {
+function App({ func }) {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
  
   
-  const socket = io('http://localhost:' + 5000);
+  const socket = io('http://localhost:5000');
   socket.on("connection", (socket) => {console.log(socket.id)});
   socket.on("connect", () => {console.log(socket.id)});
   socket.on("disconnect", () => {console.log(socket.id)});
-  socket.on("error",()=>{
-    //ここにバック側で処理が失敗したときの動作を書いてほしい
-  })
-
   const handleRecordingClick = async () => {
     if (isRecording) {
       // 録音停止
@@ -30,7 +25,7 @@ function App() {
 
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          console.log(event.data.length)
+          console.log(event.data.size);
           sendAudioData(event.data);
         }
       };
@@ -43,11 +38,11 @@ function App() {
     const reader = new FileReader();
     reader.onload = () => {
       const arrayBuffer = reader.result;
+      console.log(arrayBuffer)
       socket.emit('audio_data', arrayBuffer); // サーバーに音声データを送信
     };
     reader.readAsArrayBuffer(audioBlob);
   };
-
   return (
     <div className="App">
       <h1>音程を計測しよう!!</h1>
