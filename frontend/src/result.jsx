@@ -1,44 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-function Result() { // Resultコンポーネントを定義
-  const [songs, setSongs] = useState([]);
+// クイズデータを直接コンポーネント内で定義
+const quizData = [
+  {
+    lyrics: "青に似たすっぱい春とライラック君を待つよここでね",
+    options: ["ライラック", "青と夏", "ケセラセラ", "コロンブス"],
+    correctAnswer: "ライラック"
+  },
+  {
+    lyrics: "ねえ　今でも覚えてる？あの日の空の色",
+    options: ["青と夏", "ハルノヒ", "シーソーゲーム", "夏色"],
+    correctAnswer: "青と夏"
+  },
+  // 必要に応じて他のクイズ問題を追加
+];
+
+function Result() {
+  const [currentQuiz, setCurrentQuiz] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/api/recommendations');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setSongs(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    // ランダムにクイズを選択
+    const randomQuiz = quizData[Math.floor(Math.random() * quizData.length)];
+    setCurrentQuiz(randomQuiz);
   }, []);
 
-  return ( // Resultコンポーネント内のreturn
+  const handleAnswerSelect = (answer) => {
+    setSelectedAnswer(answer);
+    setIsCorrect(answer === currentQuiz.correctAnswer);
+  };
+
+  return (
     <div className="Result">
       <h1>あなたにオススメの曲は!!</h1>
-      <ul>
-        {songs.map((song, index) => (
-          <li key={index}>
-            {song.name} - {song.artist}
-          </li>
-        ))}
-      </ul>
+      {/* 推奨曲のリストはここに後で追加されます */}
+      
       <div className="button-container">
         <button className="bright-button" onClick={() => window.location.href='../index.html'}>
           もう一度計測する
         </button>
       </div>
+      
+      {currentQuiz && (
+        <div className="Quiz">
+          <h2>歌詞クイズ</h2>
+          <p>{currentQuiz.lyrics}</p>
+          <ul>
+            {currentQuiz.options.map((option, index) => (
+              <li key={index}>
+                <button onClick={() => handleAnswerSelect(option)} disabled={selectedAnswer !== null}>
+                  {option}
+                </button>
+              </li>
+            ))}
+          </ul>
+          {selectedAnswer && (
+            <p>{isCorrect ? '正解です！' : '不正解です。正解は ' + currentQuiz.correctAnswer + ' でした。'}</p>
+          )}
+        </div>
+      )}
     </div>
   );
-} // Resultコンポーネントの終わり
+}
 
 export default Result;
 
