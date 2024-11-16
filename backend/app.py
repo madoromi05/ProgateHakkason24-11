@@ -10,7 +10,6 @@ import asyncio
 import os
 import io
 
-def get_recommended_songs(): raise ZeroDivisionError("ee")
 app = Flask(__name__)
 CORS(app)  # すべてのオリジンからのアクセスを許可
 socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
