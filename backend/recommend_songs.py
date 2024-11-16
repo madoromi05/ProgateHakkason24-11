@@ -34,7 +34,7 @@ def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch
 
         track_ids = [track['id'] for track in results['tracks']['items']]
         features_list = sp.audio_features(track_ids)
-
+        print("s")
         for i, track in enumerate(results['tracks']['items']):
             if len(recommended_tracks) >= limit:
                 break
@@ -49,3 +49,5 @@ def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch
         offset += 100
 
     return recommended_tracks
+if __name__=="__main__":
+    get_recommended_songs()
