@@ -23,6 +23,11 @@ const quizData = [
     options: ["シャルル", "ダーリン", "雨とペトラ", "ノマド"],
     correctAnswer: "雨とペトラ",
   },
+  {
+    lyrics: "難問:もう一回　もう一回「私は今日も転がります」と",
+    options: ["ロンリーガール", "裏表ラバーズ", "アンノウン・マザーグース", "アンハッピーリフレイン"],
+    correctAnswer: "雨とペトラ",
+  },
 ];
 
 function Result() {
