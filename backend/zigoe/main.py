@@ -52,9 +52,9 @@ async def topitchpng(audio_data,file="output.png"):
 async def test():
     import random 
     path=random.choice([
-        r"backend\zigoe\moto\752912460.876488.wav",
-        r"backend\zigoe\moto\752912460.707662.wav",
-        r"backend\zigoe\moto\752912460.518347.wav",])
+        r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.876488.wav",
+        r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.707662.wav",
+        r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.518347.wav",])
     data=loadwav(file=path)
     return await main(data)
 
@@ -63,7 +63,7 @@ if __name__=="__main__":
     import sys,os
     if len(sys.argv)<=1:
         print("引数出せ")
-        filepath=r"backend\zigoe\moto\752912460.518347.wav"
+        filepath=r"C:\TK\github\hakkason3\backend\zigoe\moto\752912460.518347.wav"
     else:
         filepath=os.path.abspath(sys.argv[1])
     main(loadwav(filepath))
