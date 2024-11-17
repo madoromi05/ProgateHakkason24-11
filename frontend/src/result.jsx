@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// 配列をシャッフルする関数
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
 // クイズデータを定義
 const quizData = [
   {
@@ -18,6 +23,11 @@ const quizData = [
     options: ["シャルル", "ダーリン", "雨とペトラ", "ノマド"],
     correctAnswer: "雨とペトラ",
   },
+  {
+    lyrics: "難問:もう一回　もう一回「私は今日も転がります」と",
+    options: ["ロンリーガール", "裏表ラバーズ", "アンノウン・マザーグース", "アンハッピーリフレイン"],
+    correctAnswer: "ロンリーガール",
+  },
 ];
 
 function Result() {
@@ -30,6 +40,10 @@ function Result() {
   const [quizFinished, setQuizFinished] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('None');
+  const [artistFilter, setArtistFilter] = useState('All');
+  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [selectedSongs, setSelectedSongs] = useState([]);
+  const artistOptions = ['All', ...new Set(songs.map((song) => song.artist))];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,14 +71,42 @@ function Result() {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
-    setCurrentQuiz(quizData[quizIndex]);
+  
+    // クイズデータと選択肢をシャッフル
+    const shuffledQuizData = shuffleArray([...quizData]); // クイズデータ全体をシャッフル
+    const shuffledOptions = shuffleArray([...shuffledQuizData[quizIndex].options]); // 選択肢をシャッフル
+    setCurrentQuiz({ ...shuffledQuizData[quizIndex], options: shuffledOptions });
   }, [quizIndex]);
+
+  const handleSelectAll = () => {
+    const newIsAllSelected = !isAllSelected;
+    setIsAllSelected(newIsAllSelected);
+    if (newIsAllSelected) {
+      setSelectedSongs(filteredSongs.map((song) => song.name));
+    } else {
+      setSelectedSongs([]);
+    }
+  };
+
+  const handleCheckboxChange = (songName) => {
+    if (selectedSongs.includes(songName)) {
+      // チェックを外す
+      setSelectedSongs(selectedSongs.filter((name) => name !== songName));
+    } else {
+      // チェックを付ける
+      setSelectedSongs([...selectedSongs, songName]);
+    }
+  };
 
   const handleSearch = () => {
     setSearchQuery('');
     window.location.href = '../index.html';
+  };
+
+  const handleArtistFilterChange = (artist) => {
+    setArtistFilter(artist);
   };
 
   const handleSortChange = (option) => {
@@ -78,11 +120,12 @@ function Result() {
     setSongs(option === 'None' ? songs : sortedSongs);
   };
 
-  const filteredSongs = songs.filter(
-    (song) =>
-      song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artist.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSongs = songs
+  .filter((song) =>
+    song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    song.artist.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .filter((song) => (artistFilter === 'All' ? true : song.artist === artistFilter));
 
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
@@ -132,11 +175,29 @@ function Result() {
         {/* 空白のヘッダー行 */}
         <div className="issue-card">
           <div className="song-info">
-            <input type="checkbox" className="song-checkbox" />
-            <span className="status-icon white-icon"></span>
+            {/* 一括選択チェックボックス */}
+            <input
+              type="checkbox"
+              className="song-checkbox"
+              checked={isAllSelected}
+              onChange={handleSelectAll}
+            />
+            <span>すべて選択</span>
 
             {/* Sort by ドロップダウンメニューを同じ横列に配置 */}
             <div className="sort-container">
+            <select
+              className="artist-dropdown"
+              value={artistFilter}
+              onChange={(e) => handleArtistFilterChange(e.target.value)}
+            > 
+              {artistOptions.map((artist, index) => (
+                <option key={index} value={artist}>
+                  {artist}
+                </option>
+              ))}
+            </select>
+            </div>
               <select
                 className="sort-dropdown"
                 value={sortOption}
@@ -146,8 +207,6 @@ function Result() {
                 <option value="Artist">Artist</option>
                 <option value="Title">Title</option>
               </select>
-            </div>
-
             <div className="text-info">
               <p className="song-title"></p>
               <p className="song-artist"></p>
@@ -158,7 +217,13 @@ function Result() {
         {filteredSongs.map((song, index) => (
           <div key={index} className="issue-card">
             <div className="song-info">
-              <input type="checkbox" className="song-checkbox" />
+              {/* 個別のチェックボックス */}
+              <input
+                type="checkbox"
+                className="song-checkbox"
+                checked={selectedSongs.includes(song.name)}
+                onChange={() => handleCheckboxChange(song.name)}
+              />
               <span className="status-icon"></span>
               <div className="text-info">
                 <p className="song-title">{song.name}</p>
