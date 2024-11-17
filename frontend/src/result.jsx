@@ -30,6 +30,8 @@ function Result() {
   const [quizFinished, setQuizFinished] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('None');
+  const [artistFilter, setArtistFilter] = useState('All');
+  const artistOptions = ['All', ...new Set(songs.map((song) => song.artist))];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +56,10 @@ function Result() {
     window.location.href = '../index.html';
   };
 
+  const handleArtistFilterChange = (artist) => {
+    setArtistFilter(artist);
+  };
+
   const handleSortChange = (option) => {
     setSortOption(option);
     let sortedSongs = [...songs];
@@ -65,11 +71,12 @@ function Result() {
     setSongs(option === 'None' ? songs : sortedSongs);
   };
 
-  const filteredSongs = songs.filter(
-    (song) =>
-      song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artist.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSongs = songs
+  .filter((song) =>
+    song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    song.artist.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .filter((song) => (artistFilter === 'All' ? true : song.artist === artistFilter));
 
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
@@ -124,6 +131,18 @@ function Result() {
 
             {/* Sort by ドロップダウンメニューを同じ横列に配置 */}
             <div className="sort-container">
+            <select
+              className="artist-dropdown"
+              value={artistFilter}
+              onChange={(e) => handleArtistFilterChange(e.target.value)}
+            > 
+              {artistOptions.map((artist, index) => (
+                <option key={index} value={artist}>
+                  {artist}
+                </option>
+              ))}
+            </select>
+            </div>
               <select
                 className="sort-dropdown"
                 value={sortOption}
@@ -133,8 +152,6 @@ function Result() {
                 <option value="Artist">Artist</option>
                 <option value="Title">Title</option>
               </select>
-            </div>
-
             <div className="text-info">
               <p className="song-title"></p>
               <p className="song-artist"></p>
