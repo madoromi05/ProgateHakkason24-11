@@ -10,8 +10,10 @@ from moviepy.editor import AudioFileClip
 from zigoe import path_async
 import multiprocessing
 import asyncio
+import isodate
 # YouTube APIキー
 API_KEY = 'AIzaSyCA1UwHcgu0TApJqUsMxP1h312rGwtZ-hk'
+
 
 
 # 1. YouTube APIを使って音楽動画のIDを取得（音楽カテゴリに限定）
@@ -33,6 +35,7 @@ def get_video_id(song_name):
     if response['items']:
         print(f"get len({len(response['items'])})")
         return[(item['id']['videoId'],item['snippet']['title']) for item in response['items']]
+    
     else:
         print("No music videos found for the given song name.")
         return None
@@ -58,19 +61,18 @@ async def download_audio(video_id,path="output"):
 # 3. 音声ファイルをWAV形式に変換
 async def convert_to_wav(path="output"):
     try:
-        audio_clip = AudioFileClip(f"{path}.mp3")
-        audio_clip.write_audiofile(f"{path}.wav", codec='pcm_s16le')
-        os.remove(f"{path}.mp3")
-    except:
-        try:
-            audio_clip = AudioFileClip(f"{path}.webm")
+        audio_clip = AudioFileClip(f"{path}.webm")
+        if audio_clip.duration <= 10 * 60:  # 10分 = 10 * 60秒
             audio_clip.write_audiofile(f"{path}.wav", codec='pcm_s16le')
-            os.remove(f"{path}.webm")
-        except Exception as e:
-            print(e)
-            print("第っ失敗")
-            exit()
-    print("Converted to '{path}.wav'")
+        else:
+            print("音声の長さが10分を超えています。")
+    except Exception as e:
+        print(e)
+        print("第っ失敗")
+    try:
+        os.remove(f"{path}.webm")
+    except:
+        print("Converted to '{path}.wav'")
 
 async def wrapper(video_id,title):
     await download_audio(video_id,path=f"audio{video_id}")
