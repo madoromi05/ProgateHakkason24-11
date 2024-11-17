@@ -23,6 +23,7 @@ def pitch_in_range(track_key, track_mode, user_lowest_pitch, user_highest_pitch)
         if user_highest_pitch < 200:
             return base_pitch >= user_lowest_pitch
     return user_lowest_pitch <= base_pitch <= user_highest_pitch
+
 def get_recommended_songs_pitch_to_json(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
     with open("kyok.json", 'r',encoding="utf-8") as file:
         json_data:dict= json.load(file)
@@ -31,7 +32,7 @@ def get_recommended_songs_pitch_to_json(user_lowest_pitch=key_pitch_map[0], user
         return random.sample(lis,10)
     else:
         return lis
-            
+
 def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch=key_pitch_map[11], limit=30):
     recommended_tracks = []
     offset = 0
@@ -39,7 +40,7 @@ def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch
     n=0
     if(user_highest_pitch<key_pitch_map[0] or user_lowest_pitch>key_pitch_map[11]):return []
     while len(recommended_tracks) < limit and n<max_try:
-        results = sp.search(q='year:2020-2023', type='track', limit=50, offset=offset, market='JP')
+        results = sp.search(q='year:2021-2023', type='track', limit=50, offset=offset, market='JP')
         if not results['tracks']['items']:
             break
         track_ids = [track['id'] for track in results['tracks']['items']]
@@ -55,7 +56,7 @@ def get_recommended_songs(user_lowest_pitch=key_pitch_map[0], user_highest_pitch
                     'artist': track['artists'][0]['name'],
                 })
         n+=1
-        offset += 100
+        offset += 200
 
     return recommended_tracks
 if __name__=="__main__":
