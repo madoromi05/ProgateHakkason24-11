@@ -1,0 +1,11 @@
+name:Sayaka Kanda, Eisuke Tsuda - とびら開けて (From &quot;Frozen&quot;),min:104.59304839544059,max:442.49512210393965
+name:SixTONES - FASHION [YouTube ver.],min:144.98739615067365,max:412.45024891694567
+name:Miyuki Tsurugi - お母様はあなたの味方 (From『塔の上のラプンツェル』),min:136.4468147686303,max:500.1321592787165
+name:Ruki Saito - 奇跡を夢みて (From『ミラベルと魔法だらけの家』),min:155.39717573342082,max:444.6568404381301
+name:理芽 - さみしいひと / RIM - Lonely (Official Music Video),min:132.5304259511943,max:512.8574500864412
+name:Lauren Spencer Smith - Narcissist (Official Video),min:222.04592370925428,max:433.82057314946405
+name:Jeremy Zucker - comethru (Official Video),min:127.33761724591308,max:415.44054795998085
+name:TWICE 「Celebrate」 Music Video,min:235.87053619568857,max:545.6388921383588
+name:SixTONES - Gum Tape [PLAYLIST -SixTONES YouTube Limited Performance- Day.5],min:90.95299806318656,max:432.2008534319953
+name:Honoka Suzuki - 夢まであとすこし (From『プリンセスと魔法のキス』),min:153.93069478233866,max:534.5786414789274
+name:ちゃんみな - Never Grow Up (Acoustic Version) [Studio Session],min:108.03774917836594,max:520.8170325984966

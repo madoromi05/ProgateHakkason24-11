@@ -77,8 +77,11 @@ async def wrapper(video_id,title):
     await convert_to_wav(path=f"audio{video_id}")
     print("I/o終了",title,video_id)
 def run_async_task(item):
-    loop = asyncio.get_event_loop()
-    data=loop.run_until_complete(path_async(item[0]))
+    try:
+        loop = asyncio.get_event_loop()
+        data=loop.run_until_complete(path_async(item[0]))
+    except Exception as e:
+        print(e,"やばいやばお")
     print("音声処理終了",*item)
     with open("output.txt","a",encoding="utf-8") as f:
         f.write(f'name:{item[1]},min:{data["min"]},max:{data["max"]}\n')
@@ -87,7 +90,7 @@ def run_async_task(item):
 async def main():
     global json_data
     # 楽曲を検索して動画IDを取得
-    video_list = get_video_id("")
+    video_list = get_video_id("jpop")
     video_list=[(id,title) for id,title in video_list if not id in json_data ]
     print(len(video_list),"こだな")
     if video_list:
