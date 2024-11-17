@@ -49,6 +49,6 @@ def get_recommended_songs(user_lowest_pitch=130, user_highest_pitch=523, limit=3
                     'artist': track['artists'][0]['name'],
                 })
 
-        offset += 50
+        offset += 100
 
     return recommended_tracks
