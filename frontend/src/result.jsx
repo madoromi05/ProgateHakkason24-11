@@ -31,6 +31,8 @@ function Result() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('None');
   const [artistFilter, setArtistFilter] = useState('All');
+  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [selectedSongs, setSelectedSongs] = useState([]);
   const artistOptions = ['All', ...new Set(songs.map((song) => song.artist))];
 
   useEffect(() => {
@@ -50,6 +52,26 @@ function Result() {
     fetchData();
     setCurrentQuiz(quizData[quizIndex]);
   }, [quizIndex]);
+
+  const handleSelectAll = () => {
+    const newIsAllSelected = !isAllSelected;
+    setIsAllSelected(newIsAllSelected);
+    if (newIsAllSelected) {
+      setSelectedSongs(filteredSongs.map((song) => song.name));
+    } else {
+      setSelectedSongs([]);
+    }
+  };
+
+  const handleCheckboxChange = (songName) => {
+    if (selectedSongs.includes(songName)) {
+      // チェックを外す
+      setSelectedSongs(selectedSongs.filter((name) => name !== songName));
+    } else {
+      // チェックを付ける
+      setSelectedSongs([...selectedSongs, songName]);
+    }
+  };
 
   const handleSearch = () => {
     setSearchQuery('');
@@ -126,8 +148,14 @@ function Result() {
         {/* 空白のヘッダー行 */}
         <div className="issue-card">
           <div className="song-info">
-            <input type="checkbox" className="song-checkbox" />
-            <span className="status-icon white-icon"></span>
+            {/* 一括選択チェックボックス */}
+            <input
+              type="checkbox"
+              className="song-checkbox"
+              checked={isAllSelected}
+              onChange={handleSelectAll}
+            />
+            <span>すべて選択</span>
 
             {/* Sort by ドロップダウンメニューを同じ横列に配置 */}
             <div className="sort-container">
@@ -162,7 +190,13 @@ function Result() {
         {filteredSongs.map((song, index) => (
           <div key={index} className="issue-card">
             <div className="song-info">
-              <input type="checkbox" className="song-checkbox" />
+              {/* 個別のチェックボックス */}
+              <input
+                type="checkbox"
+                className="song-checkbox"
+                checked={selectedSongs.includes(song.name)}
+                onChange={() => handleCheckboxChange(song.name)}
+              />
               <span className="status-icon"></span>
               <div className="text-info">
                 <p className="song-title">{song.name}</p>
