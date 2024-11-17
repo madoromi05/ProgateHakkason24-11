@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// 配列をシャッフルする関数
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
 // クイズデータを定義
 const quizData = [
   {
@@ -48,9 +53,13 @@ function Result() {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
-    setCurrentQuiz(quizData[quizIndex]);
+  
+    // クイズデータと選択肢をシャッフル
+    const shuffledQuizData = shuffleArray([...quizData]); // クイズデータ全体をシャッフル
+    const shuffledOptions = shuffleArray([...shuffledQuizData[quizIndex].options]); // 選択肢をシャッフル
+    setCurrentQuiz({ ...shuffledQuizData[quizIndex], options: shuffledOptions });
   }, [quizIndex]);
 
   const handleSelectAll = () => {
