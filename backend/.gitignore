@@ -4,5 +4,3 @@ zigoe/ffmpeg-master-latest-win64-gpl
 testvenv/
 *__pycache__/
 *.mp4
-*.wav
-*.wava
