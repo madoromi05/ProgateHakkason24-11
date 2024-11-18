@@ -28,6 +28,21 @@ const quizData = [
     options: ["ロンリーガール", "裏表ラバーズ", "アンノウン・マザーグース", "アンハッピーリフレイン"],
     correctAnswer: "ロンリーガール",
   },
+  {
+    lyrics: "超難問:ひらりはらり女の子ふわりふわり言葉のsaw",
+    options: ["モエチャッカファイア", "はろー。", "しあわせレストラン", "さよならバースデー"],
+    correctAnswer: "モエチャッカファイア",
+  },
+  {
+    lyrics: "簡単:hihihiA hihihiB hihihiC D E",
+    options: ["高音厨音域テスト", "低音厨音域テスト", "活舌厨早口テスト", "調音厨肺活量テスト"],
+    correctAnswer: "高音厨音域テスト",
+  },
+  {
+    lyrics: "簡単:J'aime l'oignon frît à l'huile,J'aime l'oignon quand il est bon",
+    options: ["La Chanson de l'oignon", "Alouette", "L'Amour Est Bleu", "Les feuilles mortes"],
+    correctAnswer: "La Chanson de l'oignon",
+  },
 ];
 
 function Result() {
@@ -44,6 +59,7 @@ function Result() {
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [selectedSongs, setSelectedSongs] = useState([]);
   const artistOptions = ['All', ...new Set(songs.map((song) => song.artist))];
+  const [shuffledQuizData, setShuffledQuizData] = useState([]); // シャッフルされたクイズデータ
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,11 +77,18 @@ function Result() {
   
     fetchData();
   
-    // クイズデータと選択肢をシャッフル
-    const shuffledQuizData = shuffleArray([...quizData]); // クイズデータ全体をシャッフル
-    const shuffledOptions = shuffleArray([...shuffledQuizData[quizIndex].options]); // 選択肢をシャッフル
-    setCurrentQuiz({ ...shuffledQuizData[quizIndex], options: shuffledOptions });
-  }, [quizIndex]);
+    // クイズデータを一度だけシャッフルして保存
+    const shuffledData = shuffleArray([...quizData]);
+    setShuffledQuizData(shuffledData);
+    setCurrentQuiz({ ...shuffledData[quizIndex], options: shuffleArray([...shuffledData[quizIndex].options]) });
+  }, []);
+  
+  useEffect(() => {
+    // クイズインデックスが変更されたときのみ、次のクイズを設定
+    if (shuffledQuizData.length > 0) {
+      setCurrentQuiz({ ...shuffledQuizData[quizIndex], options: shuffleArray([...shuffledQuizData[quizIndex].options]) });
+    }
+  }, [quizIndex, shuffledQuizData]);
 
   const handleSelectAll = () => {
     const newIsAllSelected = !isAllSelected;
